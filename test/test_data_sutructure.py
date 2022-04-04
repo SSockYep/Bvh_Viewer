@@ -93,3 +93,10 @@ class TestMatrix4x4:
             Matrix4x4(test_array1)
             test_array2 = np.array([1,2,3,4])
             Matrix4x4(test_array2)
+    
+    def test_equal_metrices(self):
+        test_array = np.array([[0, 1,  2, 3],
+                               [10, 11,  12, 13],
+                               [20, 21,  22, 23],
+                               [30, 31,  32, 33]])
+        assert Matrix4x4(test_array) == Matrix4x4(test_array)
