@@ -5,6 +5,7 @@ class Vector3:
         self.y = y
         self.z = z
 
+
     def __str__(self):
         return "Vector3({}, {}, {})".format(self.x, self.y, self.z)
 
@@ -26,6 +27,9 @@ class Vector3:
     
     def to_numpy(self):
         return np.array([self.x, self.y, self.z])
+
+    def copy(self):
+        return Vector3(self.x, self.y, self.z)
 
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput"):
