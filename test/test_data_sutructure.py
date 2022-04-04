@@ -77,6 +77,9 @@ class TestQuaternion:
         print(Quaternion.from_matrix(test_mat))
         assert Quaternion.from_matrix(test_mat) == Quaternion(0.82236317, 0.02226003, 0.43967974, 0.36042341)
 
+    def test_from_euler(self):
+        assert Quaternion.from_euler('xyz', np.pi/6, np.pi/4, np.pi/3) == Quaternion(0.82236317, 0.02226003, 0.43967974, 0.36042341)
+
 class TestMatrix4x4:
     def test_matrix_init(self):
         assert Matrix4x4()
