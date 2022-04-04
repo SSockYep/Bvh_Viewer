@@ -55,8 +55,17 @@ class TestQuaternion:
     
     def test_equal_quaternions(self):
         left = Quaternion(1,2,3,4)
-        right = Quaternion(1,2,3,4)
+        right = Quaternion(1.00001,2,3,4)
         assert left == right
+    
+    def test_to_matrix(self):
+        quater = Quaternion(np.cos(np.pi/3), np.sin(np.pi/3), 0, 0) # cos(1/3*pi), sin(1/3*pi), 0, 0
+        test_nparr = np.array([[1, 0, 0, 0],
+                                [0, np.cos(np.pi*2/3), -np.sin(np.pi*2/3), 0],
+                                [0, np.sin(np.pi*2/3), np.cos(np.pi*2/3), 0],
+                                [0, 0, 0, 1]])
+        test_mat = Matrix4x4(test_nparr)
+        assert quater.to_matrix() == test_mat
 
 class TestMatrix4x4:
     def test_matrix_init(self):
@@ -104,4 +113,6 @@ class TestMatrix4x4:
                                [10, 11,  12, 13],
                                [20, 21,  22, 23],
                                [30, 31,  32, 33]])
-        assert Matrix4x4(test_array) == Matrix4x4(test_array)
+        left = Matrix4x4(test_array)
+        right = Matrix4x4(test_array)
+        assert left == right
