@@ -41,5 +41,5 @@ class TestVector3():
     
     def test_instance_copy(self):
         test_vec1 = Vector3(3.5,4.1,5.2)
-        test_vec2 = Vector3(test_vec1)
+        test_vec2 = test_vec1.copy()
         assert test_vec1 == test_vec2
