@@ -41,22 +41,38 @@ class Quaternion:
     def __eq__(self, other):
         return np.isclose(self.w, other.w) and np.isclose(self.x, other.x) and \
                np.isclose(self.y, other.y) and np.isclose(self.z, other.z)
-
-class Matrix4x4:
+    
+    def to_matrix(self):
+        row0 = np.array([1 - 2*self.y*self.y - 2*self.z*self.z,
+                         2*self.x*self.y - 2*self.z*self.w,
+                         2*self.x*self.z + 2*self.y*self.w,
+                         0])
+        row1 = np.array([2*self.x*self.y + 2*self.z*self.w,
+                         1 - 2*self.x*self.x - 2*self.z*self.z,
+                         2*self.y*self.z - 2*self.x*self.w,
+                         0])
+        row2 = np.array([2*self.x*self.z - 2*self.y*self.w,
+                         2*self.y*self.z + 2*self.x*self.w,
+                         1 - 2*self.x*self.x - 2*self.y*self.y,
+                         0])
+        row3 = np.array([0, 0, 0, 1])
+        return Matrix4x4(np.array([row0, row1, row2, row3]))
+        
+class Matrix4x4: 
     def __init__(self, np_array=np.eye(4,4)):
         if type(np_array) != np.ndarray:
             raise WrongInputException(np_array)
         if np_array.shape != (4, 4):
             raise WrongInputException(np_array)
-        self._mat = np_array
+        self._mat = np.copy(np_array)
+
+    def __eq__(self, other):
+        return np.allclose(self._mat, other._mat)
 
     def __getitem__(self, pair):
         row = pair[0]
         col = pair[1]
         return self._mat[row, col]
-    
-    def __eq__(self, other):
-        return np.allclose(self._mat, other._mat)
 
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput"):
