@@ -116,3 +116,8 @@ class TestMatrix4x4:
         left = Matrix4x4(test_array)
         right = Matrix4x4(test_array)
         assert left == right
+
+    def test_matmul(self):
+        m1 = Quaternion(np.cos(np.pi/4), 0, np.sin(np.pi/4), 0).to_matrix()
+        m2 = Quaternion(np.cos(np.pi/4), 0, -np.sin(np.pi/4), 0).to_matrix()
+        assert m1 @ m2 == Matrix4x4(np.eye(1))
