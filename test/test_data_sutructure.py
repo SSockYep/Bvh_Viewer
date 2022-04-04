@@ -156,3 +156,9 @@ class TestMatrix4x4:
         assert mat == Matrix4x4.from_euler('xyz', np.pi/6, 0, 0) @ \
                       Matrix4x4.from_euler('xyz', 0, np.pi/4, 0) @ \
                       Matrix4x4.from_euler('xyz', 0, 0, np.pi/3)
+
+    def test_rotate_xzy(self):
+        mat = Matrix4x4.from_euler('xzy', np.pi/6, np.pi/4, np.pi/3)
+        assert mat == Matrix4x4.from_euler('xyz', np.pi/6, 0, 0) @ \
+                      Matrix4x4.from_euler('xyz', 0, 0, np.pi/4) @ \
+                      Matrix4x4.from_euler('xyz', 0, np.pi/3, 0)
