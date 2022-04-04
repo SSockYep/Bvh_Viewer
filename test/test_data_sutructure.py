@@ -80,6 +80,10 @@ class TestQuaternion:
     def test_from_euler(self):
         assert Quaternion.from_euler('xyz', np.pi/6, np.pi/4, np.pi/3) == Quaternion(0.82236317, 0.02226003, 0.43967974, 0.36042341)
 
+    def test_conjugate(self):
+        test_quat = Quaternion(0, np.sin(np.pi/4), 0, np.cos(np.po/4))
+        assert test_quat.conjugate() == Quaternion(0, np.sin(np.pi/4), 0, np.cos(np.po/4))
+
 class TestMatrix4x4:
     def test_matrix_init(self):
         assert Matrix4x4()
