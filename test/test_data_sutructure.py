@@ -143,3 +143,10 @@ class TestMatrix4x4:
                                            [0, 1, 0, 0],
                                            [-np.sin(np.pi/6), 0, np.cos(np.pi/6), 0],
                                            [0, 0, 0, 1]]))
+    
+    def test_rotation_z(self):
+        mat = Matrix4x4.from_euler('xyz', 0, 0, np.pi/6)
+        assert mat == Matrix4x4(np.array([[np.cos(np.pi/6), -np.sin(np.pi/6), 0, 0],
+                                          [np.sin(np.pi/6), np.cos(np.pi/6), 0, 0],
+                                          [0, 0, 1, 0],
+                                          [0, 0, 0, 1]]))
