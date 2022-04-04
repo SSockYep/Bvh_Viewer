@@ -38,3 +38,8 @@ class TestVector3():
     def test_init_from_numbers(self):
         test_vec3 = Vector3(1,2,3)
         assert test_vec3.x == 1 and test_vec3.y == 2 and test_vec3.z == 3
+    
+    def test_instance_copy(self):
+        test_vec1 = Vector3(3.5,4.1,5.2)
+        test_vec2 = Vector3(test_vec1)
+        assert test_vec1 == test_vec2
