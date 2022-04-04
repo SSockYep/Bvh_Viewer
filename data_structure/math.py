@@ -76,8 +76,12 @@ class Matrix4x4:
         return self._mat[row, col]
     
     def __matmul__(self, other):
-        print(self._mat @ other._mat)
-        return Matrix4x4(self._mat @ other._mat)
+        if isinstance(other, Matrix4x4):
+            return Matrix4x4(self._mat @ other._mat)
+        elif isinstance(other, Vector3):
+            np_vec = other.to_numpy()
+            np_vec = np.append(np_vec, 1)
+            return Vector3.from_numpy((self._mat@np_vec)[:3])
 
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput{}"):
