@@ -52,6 +52,11 @@ class TestQuaternion:
         quater = Quaternion(1,2,3,4)
         assert quater.w == 1 and quater.x == 2 and \
             quater.y == 3 and quater.z == 4
+    
+    def test_equal_quaternions(self):
+        left = Quaternion(1,2,3,4)
+        right = Quaternion(1,2,3,4)
+        assert left == right
 
 class TestMatrix4x4:
     def test_matrix_init(self):
