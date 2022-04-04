@@ -50,6 +50,9 @@ class Matrix4x4:
         row = pair[0]
         col = pair[1]
         return self._mat[row, col]
+    
+    def __eq__(self, other):
+        return np.allclose(self._mat, other._mat)
 
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput"):
