@@ -1,3 +1,4 @@
+from re import M
 import pytest
 import numpy as np
 from data_structure.math import *
@@ -162,3 +163,15 @@ class TestMatrix4x4:
         assert mat == Matrix4x4.from_euler('xyz', np.pi/6, 0, 0) @ \
                       Matrix4x4.from_euler('xyz', 0, 0, np.pi/4) @ \
                       Matrix4x4.from_euler('xyz', 0, np.pi/3, 0)
+    
+    def test_wrong_input_from_euler(self):
+        with pytest.raises(WrongInputException):
+            Matrix4x4.from_euler('xyy', 0, 0, 0)
+        with pytest.raises(WrongInputException):
+            Matrix4x4.from_euler('asd', 0, 0, 0)
+        with pytest.raises(WrongInputException):
+            Matrix4x4.from_euler('xyzy', 0, 0, 0)
+        with pytest.raises(WrongInputException):
+            Matrix4x4.from_euler('xyz', 0, 0, np.pi, np.pi)
+        with pytest.raises(WrongInputException):
+            Matrix4x4.from_euler(0, 0, np.pi, np.pi)

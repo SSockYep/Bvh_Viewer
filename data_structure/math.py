@@ -102,6 +102,16 @@ class Matrix4x4:
                                            [0, 0, 0, 1]]))
             else:
                 raise WrongInputException(seq)
+        if type(seq) != str:
+            raise WrongInputException(seq, message="Wrong Input (type of {})")
+        if len(seq) != 3:
+            raise WrongInputException(seq, message="Wrong Input (len of {})")
+        if seq[0]==seq[1] or seq[1] == seq[2]:
+            raise WrongInputException(seq, message="Wrong Input (repete same axis: {})")
+        if seq[0] not in 'xyz' or seq[1] not in 'xyz' or seq[2] not in 'xyz':
+            raise WrongInputException(seq, message="Wrong Input (character not in 'xyz' included: {})")
+        if len(angles) != 3:
+            raise WrongInputException(angles, message="Wrong Input (len of angles: {})")
         mat0 = rotate(seq[0], angles[0])
         mat1 = rotate(seq[1], angles[1])
         mat2 = rotate(seq[2], angles[2])
