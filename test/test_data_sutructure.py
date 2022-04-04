@@ -64,3 +64,11 @@ class Matrix4x4:
                                [ 0.23127103,  0.1890786 , -1.8186167 ,  0.00370964]])
         test_mat4x4 = Matrix4x4(test_array)
         assert np.allclose(test_array, test_mat4x4._mat)
+    
+    def test_get_item(self):
+        test_array = np.array([[0, 10,  20, 30],
+                               [1, 11,  21, 31],
+                               [2, 12,  22, 32],
+                               [3, 13,  23, 33]])
+        test_mat = Matrix4x4(test_array)
+        assert test_mat[0,1] == 1 and test_mat [3,2] == 32 and test_mat[1, 1] == 11
