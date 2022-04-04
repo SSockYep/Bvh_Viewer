@@ -37,6 +37,10 @@ class Quaternion:
         self.x = x
         self.y = y
         self.z = z
+    
+    def __eq__(self, other):
+        return np.isclose(self.w, other.w) and np.isclose(self.x, other.x) and \
+               np.isclose(self.y, other.y) and np.isclose(self.z, other.z)
 
 class Matrix4x4:
     def __init__(self, np_array=np.eye(4,4)):
