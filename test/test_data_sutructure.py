@@ -43,3 +43,12 @@ class TestVector3():
         test_vec1 = Vector3(3.5,4.1,5.2)
         test_vec2 = test_vec1.copy()
         assert test_vec1 == test_vec2 and id(test_vec1) != id(test_vec2)
+
+class TestQuaternion:
+    def test_quaternion_init(self):
+        assert Quaternion()
+    
+    def test_init_from_numbers(self):
+        quater = Quaternion(1,2,3,4)
+        assert quater.w == 1 and quater.x == 2 and \
+            quater.y == 3 and quater.z == 4
