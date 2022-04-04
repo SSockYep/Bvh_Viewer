@@ -52,3 +52,15 @@ class TestQuaternion:
         quater = Quaternion(1,2,3,4)
         assert quater.w == 1 and quater.x == 2 and \
             quater.y == 3 and quater.z == 4
+
+class Matrix4x4:
+    def test_matrix_init(self):
+        assert Matrix4x4()
+
+    def test_init_from_nparray(self):
+        test_array = np.array([[-0.66227084,  0.97431641,  1.73012908,  0.56201872],
+                               [ 0.39474114,  1.70260127, -0.04652928, -0.38493378],
+                               [-0.50571852,  1.04094225, -0.40867284, -0.4890231 ],
+                               [ 0.23127103,  0.1890786 , -1.8186167 ,  0.00370964]])
+        test_mat4x4 = Matrix4x4(test_array)
+        assert np.allclose(test_array, test_mat4x4._mat)
