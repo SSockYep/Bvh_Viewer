@@ -30,4 +30,7 @@ class TestVector3():
         with pytest.raises(WrongInputException):
             Vector3.from_numpy([1,2,3])
         
-            
+    def test_equal_vectors(self):
+        left = Vector3.from_numpy(np.array[3,4,5])
+        right = Vector3.from_numpy(np.array[3.000001, 4.000001, 4.999999])
+        assert left == right
