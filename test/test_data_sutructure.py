@@ -120,4 +120,4 @@ class TestMatrix4x4:
     def test_matmul(self):
         m1 = Quaternion(np.cos(np.pi/4), 0, np.sin(np.pi/4), 0).to_matrix()
         m2 = Quaternion(np.cos(np.pi/4), 0, -np.sin(np.pi/4), 0).to_matrix()
-        assert m1 @ m2 == Matrix4x4(np.eye(1))
+        assert m1 @ m2 == Matrix4x4(np.eye(4))
