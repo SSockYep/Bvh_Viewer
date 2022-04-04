@@ -10,6 +10,8 @@ class Vector3:
 
     @staticmethod
     def from_numpy(np_array):
+        if type(np_array) != np.ndarray:
+            raise WrongInputException(np_array)
         if np_array.size != 3 or len(np_array.shape) != 1:
             raise WrongInputException(np_array)
         new_vector3 = Vector3()
