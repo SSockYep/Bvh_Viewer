@@ -121,3 +121,8 @@ class TestMatrix4x4:
         m1 = Quaternion(np.cos(np.pi/4), 0, np.sin(np.pi/4), 0).to_matrix()
         m2 = Quaternion(np.cos(np.pi/4), 0, -np.sin(np.pi/4), 0).to_matrix()
         assert m1 @ m2 == Matrix4x4(np.eye(4))
+    
+    def test_mat_vec_mul(self):
+        mat = Quaternion(np.cos(np.pi/4), 0, np.sin(np.pi/4), 0).to_matrix()
+        vec = Vector3(1,0,0)
+        assert mat@vec == Vector3(0, 0, -1)
