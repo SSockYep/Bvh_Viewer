@@ -47,3 +47,6 @@ class WrongInputException(Exception):
 class Matrix4x4:
     def __init__(self, np_array=np.eye(4,4)):
         self._mat = np_array
+
+    def __getitem__(self, row, col):
+        return self._mat[row, col]
