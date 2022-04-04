@@ -38,6 +38,9 @@ class Quaternion:
     def __eq__(self, other):
         return np.isclose(self.w, other.w) and np.isclose(self.x, other.x) and \
                np.isclose(self.y, other.y) and np.isclose(self.z, other.z)
+
+    def __str__(self):
+        return "Quaternion({}, {}, {}, {})".format(self.w, self.x, self.y, self.z)
     
     def to_matrix(self):
         row0 = np.array([1 - 2*self.y*self.y - 2*self.z*self.z,
@@ -59,11 +62,35 @@ class Quaternion:
     def from_matrix(cls, mat):
         if not np.allclose(mat[:, 3], [0,0,0,1]):
             raise WrongInputException(mat, "Wrong Input (matrix has translation: {})") 
-        w = np.sqrt(1+mat[0,0]+mat[1,1]+mat[2,2])/2
-        w4 = w * 4
-        x = (mat[2,1]-mat[1,2])/w4
-        y = (mat[0,2]-mat[2,0])/w4
-        z = (mat[1,0]-mat[0,1])/w4
+        tr = np.array([mat[0,0], mat[1,1], mat[2,2],  
+                       mat[0,0]+mat[1,1]+mat[2,2]])
+        arg_max = tr.argmax()
+        if arg_max == 3:
+            w4 = np.sqrt(tr[3]+1)*2
+            w = w4 / 4
+            x = (mat[2,1]-mat[1,2]) / w4
+            y = (mat[0,2]-mat[2,0]) / w4
+            z = (mat[1,0]-mat[0,1]) / w4
+        elif arg_max == 0:
+            x4 = np.sqrt(1+tr[0]-tr[1]-tr[2])
+            w = (mat[2,1]-mat[1,2]) / x4
+            x = w4 / 4
+            y = (mat[0,1]+mat[1,0]) / x4
+            z = (mat[0,2]+mat[2,0]) / x4
+        elif arg_max == 1:
+            y4 = np.sqrt(1+tr[1]-tr[2]-tr[0])
+            w = (mat[0,2]-mat[2,0]) / y4
+            x = (mat[0,1]+mat[1,0]) / y4
+            y = y4 / 4
+            z = (mat[1,2]+mat[2,1]) / y4
+        else:
+            z4 = np.sqrt(1+tr[2]-tr[0]-tr[1])
+            w = (mat[1,0]-mat[0,1]) / z4
+            x = (mat[0,2]+mat[2,0]) / z4
+            y = (mat[1,2]+mat[2,1]) / z4
+            z = z4 / 4
+        return cls(w, x, y, z)
+
         if np.array([w,x,y,z])@np.array([w,x,y,z]) != 1:
             raise WrongInputException(mat, "wrong input (matrix has transform not rotation {})") 
         return cls(w, x, y, z)
