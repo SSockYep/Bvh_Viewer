@@ -66,6 +66,9 @@ class TestQuaternion:
                                 [0, 0, 0, 1]])
         test_mat = Matrix4x4(test_nparr)
         assert quater.to_matrix() == test_mat
+    
+    def test_from_euler(self):
+        pass
 
 class TestMatrix4x4:
     def test_matrix_init(self):
@@ -126,3 +129,10 @@ class TestMatrix4x4:
         mat = Quaternion(np.cos(np.pi/4), 0, np.sin(np.pi/4), 0).to_matrix()
         vec = Vector3(1,0,0)
         assert mat@vec == Vector3(0, 0, -1)
+
+    def test_rotation_x(self):
+        mat = Matrix4x4.from_euler('xyz', np.pi/6, 0, 0)
+        assert mat == Matrix4x4(np.array([[1, 0, 0, 0],
+                                           [0, np.cos(np.pi/6), -np.sin(np.pi/6), 0],
+                                           [0, np.sin(np.pi/6), np.cos(np.pi/6), 0],
+                                           [0, 0, 0, 1]]))
