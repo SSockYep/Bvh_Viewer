@@ -31,6 +31,13 @@ class Vector3:
     def copy(self):
         return Vector3(self.x, self.y, self.z)
 
+class Quaternion:
+    def __init__(self, w=1, x=0, y=0, z=0):
+        self.w = w
+        self.x = x
+        self.y = y
+        self.z = z
+
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput"):
         self.inputs = inputs
