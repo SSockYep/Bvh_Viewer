@@ -53,7 +53,7 @@ class TestQuaternion:
         assert quater.w == 1 and quater.x == 2 and \
             quater.y == 3 and quater.z == 4
 
-class Matrix4x4:
+class TestMatrix4x4:
     def test_matrix_init(self):
         assert Matrix4x4()
 
@@ -66,9 +66,27 @@ class Matrix4x4:
         assert np.allclose(test_array, test_mat4x4._mat)
     
     def test_get_item(self):
-        test_array = np.array([[0, 10,  20, 30],
-                               [1, 11,  21, 31],
-                               [2, 12,  22, 32],
-                               [3, 13,  23, 33]])
+        test_array = np.array([[0, 1,  2, 3],
+                               [10, 11,  12, 13],
+                               [20, 21,  22, 23],
+                               [30, 31,  32, 33]])
         test_mat = Matrix4x4(test_array)
-        assert test_mat[0,1] == 1 and test_mat [3,2] == 32 and test_mat[1, 1] == 11
+        assert test_mat[0,1] == 1 and test_mat[3,2] == 32 and test_mat[1, 1] == 11
+
+    def test_wrong_type_init(self):
+        with pytest.raises(WrongInputException):
+            test_array = [[0, 1,  2, 3],
+                          [10, 11,  12, 32],
+                          [20, 21,  22, 23],
+                          [30, 31,  32, 33]]
+            Matrix4x4(test_array)
+    
+    def test_wrong_shape_init(self):
+        with pytest.raises(WrongInputException):
+            test_array1 = np.array([[0, 1,  2, 3, 4],
+                                   [10, 11,  12, 13, 14],
+                                   [20, 21,  22, 23, 24],
+                                   [30, 31,  32, 33, 34]])
+            Matrix4x4(test_array1)
+            test_array2 = np.array([1,2,3,4])
+            Matrix4x4(test_array2)
