@@ -5,6 +5,9 @@ class Vector3:
         self.y = 0
         self.z = 0
 
+    def __str__(self):
+        return "Vector3({}, {}, {})".format(self.x, self.y, self.z)
+
     @staticmethod
     def from_numpy(np_array):
         if np_array.size != 3 or len(np_array.shape) != 1:
