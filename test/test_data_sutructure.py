@@ -34,3 +34,7 @@ class TestVector3():
         left = Vector3.from_numpy(np.array([3,4,5]))
         right = Vector3.from_numpy(np.array([3.000001, 4.000001, 4.999999]))
         assert left == right
+    
+    def test_init_from_numbers(self):
+        test_vec3 = Vector3(1,2,3)
+        assert test_vec3.x == 1 and test_vec3.y == 2 and test_vec3.z == 3
