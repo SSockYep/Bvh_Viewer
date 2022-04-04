@@ -14,6 +14,9 @@ class Vector3:
         new_vector3.y = np_array[1]
         new_vector3.z = np_array[2]
         return new_vector3
+    
+    def to_numpy(self):
+        return np.array([self.x, self.y, self.z])
 
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput"):
