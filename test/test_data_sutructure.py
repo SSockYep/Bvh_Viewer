@@ -87,7 +87,7 @@ class TestQuaternion:
     def test_mul(self):
         left = Quaternion(1,2,3,4)
         right = Quaternion(5,6,7,8)
-        assert left * right == Quaternion(-60, 12, 30, 2412)
+        assert left * right == Quaternion(-60, 12, 30, 24)
 
 class TestMatrix4x4:
     def test_matrix_init(self):

@@ -1,5 +1,5 @@
 import numpy as np
-from sympy import Matrix
+from sympy import Q, Matrix
 class Vector3:
     def __init__(self, x=0, y=0, z=0):
         self.x = x
@@ -42,6 +42,16 @@ class Quaternion:
     def __str__(self):
         return "Quaternion({}, {}, {}, {})".format(self.w, self.x, self.y, self.z)
     
+    def __mul__(self, other):
+        if not isinstance(other, Quaternion):
+            assert TypeError(other)
+        a, b, c, d = self.w, self.x, self.y, self.z
+        e, f, g, h = other.w, other.x, other.y, other.z
+        res = Quaternion((a*e - b*f - c*g - d*h), (a*f + b*e + c*h - d*g),
+                          (a*g - b*h + c*e + d*f), (a*h + b*g - c*f + d*e))
+        print(res)
+        return res
+
     def to_matrix(self):
         row0 = np.array([1 - 2*self.y*self.y - 2*self.z*self.z,
                          2*self.x*self.y - 2*self.z*self.w,
@@ -89,12 +99,27 @@ class Quaternion:
             x = (mat[0,2]+mat[2,0]) / z4
             y = (mat[1,2]+mat[2,1]) / z4
             z = z4 / 4
-        return cls(w, x, y, z)
-
         if np.array([w,x,y,z])@np.array([w,x,y,z]) != 1:
             raise WrongInputException(mat, "wrong input (matrix has transform not rotation {})") 
         return cls(w, x, y, z)
+
+    @classmethod
+    def from_euler(cls, seq, *angles):
         
+        if type(seq) != str:
+            raise WrongInputException(seq, message="Wrong Input (type of {})")
+        if len(seq) != 3:
+            raise WrongInputException(seq, message="Wrong Input (len of {})")
+        if seq[0]==seq[1] or seq[1] == seq[2]:
+            raise WrongInputException(seq, message="Wrong Input (repete same axis: {})")
+        if seq[0] not in 'xyz' or seq[1] not in 'xyz' or seq[2] not in 'xyz':
+            raise WrongInputException(seq, message="Wrong Input (character not in 'xyz' included: {})")
+        if len(angles) != 3:
+            raise WrongInputException(angles, message="Wrong Input (len of angles: {})")
+
+    def conjugate(self):
+        return Quaternion(self.w, -self.x, -self.y, -self.z)
+
 class Matrix4x4: 
     def __init__(self, np_array=np.eye(4,4)):
         if type(np_array) != np.ndarray:
