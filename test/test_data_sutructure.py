@@ -16,7 +16,6 @@ class TestVector3():
         with pytest.raises(WrongInputException):
             test_nparray = np.array([1,2,3,4])
             Vector3.from_numpy(test_nparray)
-            test_list = [1,2,3]
     
     def test_vector3_to_numpy(self):
         test_nparray = np.array([4,5,6])
@@ -27,5 +26,8 @@ class TestVector3():
         test_vec3 = Vector3.from_numpy(np.array([1,2,3]))
         assert str(test_vec3) == "Vector3(1, 2, 3)"
 
+    def test_wrong_type_from_numpy(self):
+        with pytest.raises(WrongInputException):
+            Vector3.from_numpy([1,2,3])
         
             
