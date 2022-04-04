@@ -17,6 +17,11 @@ class Test_Vector3():
         with pytest.raises(WrongInputException):
             test_nparray = np.array([1,2,3,4])
             Vector3.from_numpy(test_nparray)
+    
+    def test_vector3_to_numpy(self):
+        test_nparray = np.array([4,5,6])
+        test_vec3 = Vector3.from_numpy(test_nparray)
+        assert test_vec3.to_numpy() == test_nparray
 
 
         
