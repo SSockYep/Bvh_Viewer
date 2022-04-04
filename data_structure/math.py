@@ -38,15 +38,21 @@ class Quaternion:
         self.y = y
         self.z = z
 
+class Matrix4x4:
+    def __init__(self, np_array=np.eye(4,4)):
+        if type(np_array) != np.ndarray:
+            raise WrongInputException(np_array)
+        if np_array.shape != (4, 4):
+            raise WrongInputException(np_array)
+        self._mat = np_array
+
+    def __getitem__(self, pair):
+        row = pair[0]
+        col = pair[1]
+        return self._mat[row, col]
+
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput"):
         self.inputs = inputs
         self.message = message
         super().__init__(self.message)
-
-class Matrix4x4:
-    def __init__(self, np_array=np.eye(4,4)):
-        self._mat = np_array
-
-    def __getitem__(self, row, col):
-        return self._mat[row, col]
