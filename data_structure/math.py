@@ -43,3 +43,7 @@ class WrongInputException(Exception):
         self.inputs = inputs
         self.message = message
         super().__init__(self.message)
+
+class Matrix4x4:
+    def __init__(self, np_array=np.eye(4,4)):
+        self._mat = np_array
