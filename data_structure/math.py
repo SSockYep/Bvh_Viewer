@@ -92,7 +92,11 @@ class Matrix4x4:
                                    [0, 1, 0, 0],
                                    [-np.sin(angles[1]), 0, np.cos(angles[1]), 0],
                                    [0, 0, 0, 1]]))
-        return matx @ maty
+        matz = Matrix4x4(np.array([[np.cos(angles[2]), -np.sin(angles[2]), 0, 0],
+                                   [np.sin(angles[2]), np.cos(angles[2]), 0, 0],
+                                   [0, 0, 1, 0],
+                                   [0, 0, 0, 1]]))
+        return matx @ maty @ matz
 
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput{}"):
