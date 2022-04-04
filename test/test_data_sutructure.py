@@ -83,6 +83,11 @@ class TestQuaternion:
     def test_conjugate(self):
         test_quat = Quaternion(0, np.sin(np.pi/4), 0, np.cos(np.po/4))
         assert test_quat.conjugate() == Quaternion(0, np.sin(np.pi/4), 0, np.cos(np.po/4))
+    
+    def test_mul(self):
+        left = Quaternion(1,2,3,4)
+        right = Quaternion(5,6,7,8)
+        assert left * right == Quaternion(-60, 12, 30, 2412)
 
 class TestMatrix4x4:
     def test_matrix_init(self):
