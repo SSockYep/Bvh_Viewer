@@ -71,7 +71,10 @@ class TestMatrix4x4:
                                [20, 21,  22, 23],
                                [30, 31,  32, 33]])
         test_mat = Matrix4x4(test_array)
-        assert test_mat[0,1] == 1 and test_mat[3,2] == 32 and test_mat[1, 1] == 11
+        assert test_mat[0,1] == 1 and test_mat[3,2] == 32 and \
+               test_mat[1,1] == 11 and test_mat[0,2] == 2 and \
+               np.allclose(test_mat[:,2], np.array([2, 12, 22,32])) and \
+               np.allclose(test_mat[1,:], np.array([10, 11, 12, 13]))
 
     def test_wrong_type_init(self):
         with pytest.raises(WrongInputException):
