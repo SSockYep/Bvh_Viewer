@@ -1,4 +1,5 @@
 import numpy as np
+from sympy import Matrix
 class Vector3:
     def __init__(self, x=0, y=0, z=0):
         self.x = x
@@ -73,9 +74,13 @@ class Matrix4x4:
         row = pair[0]
         col = pair[1]
         return self._mat[row, col]
+    
+    def __matmul__(self, other):
+        print(self._mat @ other._mat)
+        return Matrix4x4(self._mat @ other._mat)
 
 class WrongInputException(Exception):
-    def __init__(self, inputs, message="WrongInput"):
+    def __init__(self, inputs, message="WrongInput{}"):
         self.inputs = inputs
-        self.message = message
+        self.message = message.format(inputs)
         super().__init__(self.message)
