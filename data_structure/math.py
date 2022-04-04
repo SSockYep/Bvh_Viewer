@@ -84,19 +84,28 @@ class Matrix4x4:
             return Vector3.from_numpy((self._mat@np_vec)[:3])
     
     def from_euler(seq, *angles):
-        matx = Matrix4x4(np.array([[1, 0, 0, 0],
-                                   [0, np.cos(angles[0]), -np.sin(angles[0]), 0],
-                                   [0, np.sin(angles[0]), np.cos(angles[0]), 0],
-                                   [0, 0, 0, 1]]))
-        maty = Matrix4x4(np.array([[np.cos(angles[1]), 0, np.sin(angles[1]), 0],
-                                   [0, 1, 0, 0],
-                                   [-np.sin(angles[1]), 0, np.cos(angles[1]), 0],
-                                   [0, 0, 0, 1]]))
-        matz = Matrix4x4(np.array([[np.cos(angles[2]), -np.sin(angles[2]), 0, 0],
-                                   [np.sin(angles[2]), np.cos(angles[2]), 0, 0],
-                                   [0, 0, 1, 0],
-                                   [0, 0, 0, 1]]))
-        return matx @ maty @ matz
+        def rotate(axis, angle):
+            if axis == 'x' or axis == 'X':
+                return Matrix4x4(np.array([[1, 0, 0, 0],
+                                           [0, np.cos(angle), -np.sin(angle), 0],
+                                           [0, np.sin(angle), np.cos(angle), 0],
+                                           [0, 0, 0, 1]]))
+            elif axis == 'y' or axis == 'Y':
+                return Matrix4x4(np.array([[np.cos(angle), 0, np.sin(angle), 0],
+                                           [0, 1, 0, 0],
+                                           [-np.sin(angle), 0, np.cos(angle), 0],
+                                           [0, 0, 0, 1]]))
+            elif axis == 'z' or axis == 'Z':
+                return Matrix4x4(np.array([[np.cos(angle), -np.sin(angle), 0, 0],
+                                           [np.sin(angle), np.cos(angle), 0, 0],
+                                           [0, 0, 1, 0],
+                                           [0, 0, 0, 1]]))
+            else:
+                raise WrongInputException(seq)
+        mat0 = rotate(seq[0], angles[0])
+        mat1 = rotate(seq[1], angles[1])
+        mat2 = rotate(seq[2], angles[2])
+        return mat0 @ mat1 @ mat2
 
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput{}"):
