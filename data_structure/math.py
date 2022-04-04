@@ -84,10 +84,15 @@ class Matrix4x4:
             return Vector3.from_numpy((self._mat@np_vec)[:3])
     
     def from_euler(seq, *angles):
-        return Matrix4x4(np.array([[1, 0, 0, 0],
+        matx = Matrix4x4(np.array([[1, 0, 0, 0],
                                    [0, np.cos(angles[0]), -np.sin(angles[0]), 0],
                                    [0, np.sin(angles[0]), np.cos(angles[0]), 0],
                                    [0, 0, 0, 1]]))
+        maty = Matrix4x4(np.array([[np.cos(angles[1]), 0, np.sin(angles[1]), 0],
+                                   [0, 1, 0, 0],
+                                   [-np.sin(angles[1]), 0, np.cos(angles[1]), 0],
+                                   [0, 0, 0, 1]]))
+        return matx @ maty
 
 class WrongInputException(Exception):
     def __init__(self, inputs, message="WrongInput{}"):
