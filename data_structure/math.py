@@ -8,6 +8,10 @@ class Vector3:
     def __str__(self):
         return "Vector3({}, {}, {})".format(self.x, self.y, self.z)
 
+    def __eq__(self, other):
+        return  np.isclose(self.x, other.x) and \
+            np.isclose(self.y, other.y) and np.isclose(self.z, other.z)
+
     @staticmethod
     def from_numpy(np_array):
         if type(np_array) != np.ndarray:
