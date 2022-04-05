@@ -38,4 +38,13 @@ class TestRotation:
 
 class TestNode:
     def test_node_initialize(self):
-        return Node()
+        assert Node() != None
+
+    def test_offset(self):
+        node = Node()
+        node.offset = Vector3(1,1,1)
+        assert node.offset == Vector3(1,1,1)
+
+    def test_set_offset_on_init(self):
+        node = Node(Vector3(1,1,1))
+        assert node.offset == Vector3(1,1,1)
