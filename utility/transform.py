@@ -91,3 +91,10 @@ class Rotation:
                          0])
         row3 = np.array([0, 0, 0, 1])
         return Matrix4x4(np.array([row0, row1, row2, row3])) 
+
+    def rotate(self, point: Vector3) -> Vector3:
+        q = self.quaternion
+        q_conj = q.conjugate()
+        p = Quaternion(0, point.x, point.y, point.z)
+        rotated = q * p * q_conj
+        return Vector3(rotated.x, rotated.y, rotated.z)
