@@ -71,3 +71,23 @@ class Rotation:
         for i in range(3):
             q.append(rotate(seq[i], angles[i]))
         return cls(q[2]*q[1]*q[0])
+
+    def to_quaternion(self):
+        return self.quaternion
+    
+    def to_matrix(self):
+        q = self.quaternion
+        row0 = np.array([1 - 2*q.y*q.y - 2*q.z*q.z,
+                         2*q.x*q.y - 2*q.z*q.w,
+                         2*q.x*q.z + 2*q.y*q.w,
+                         0])
+        row1 = np.array([2*q.x*q.y + 2*q.z*q.w,
+                         1 - 2*q.x*q.x - 2*q.z*q.z,
+                         2*q.y*q.z - 2*q.x*q.w,
+                         0])
+        row2 = np.array([2*q.x*q.z - 2*q.y*q.w,
+                         2*q.y*q.z + 2*q.x*q.w,
+                         1 - 2*q.x*q.x - 2*q.y*q.y,
+                         0])
+        row3 = np.array([0, 0, 0, 1])
+        return Matrix4x4(np.array([row0, row1, row2, row3])) 

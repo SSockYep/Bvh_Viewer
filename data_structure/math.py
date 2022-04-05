@@ -52,22 +52,6 @@ class Quaternion:
         print(res)
         return res
 
-    def to_matrix(self):
-        row0 = np.array([1 - 2*self.y*self.y - 2*self.z*self.z,
-                         2*self.x*self.y - 2*self.z*self.w,
-                         2*self.x*self.z + 2*self.y*self.w,
-                         0])
-        row1 = np.array([2*self.x*self.y + 2*self.z*self.w,
-                         1 - 2*self.x*self.x - 2*self.z*self.z,
-                         2*self.y*self.z - 2*self.x*self.w,
-                         0])
-        row2 = np.array([2*self.x*self.z - 2*self.y*self.w,
-                         2*self.y*self.z + 2*self.x*self.w,
-                         1 - 2*self.x*self.x - 2*self.y*self.y,
-                         0])
-        row3 = np.array([0, 0, 0, 1])
-        return Matrix4x4(np.array([row0, row1, row2, row3]))
-
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)
 

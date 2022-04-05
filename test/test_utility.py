@@ -19,3 +19,12 @@ class TestRotation:
                              [-0.70710678,  0.35355339,  0.61237244, 0.],
                              [0., 0., 0., 1.]])
         assert Rotation.from_matrix(test_mat) == Rotation(Quaternion(0.82236317, 0.02226003, 0.43967974, 0.36042341))
+    def test_to_matrix(self):
+        quater = Quaternion(np.cos(np.pi/3), np.sin(np.pi/3), 0, 0)
+        r = Rotation(quater) # cos(1/3*pi), sin(1/3*pi), 0, 0
+        test_nparr = np.array([[1, 0, 0, 0],
+                                [0, np.cos(np.pi*2/3), -np.sin(np.pi*2/3), 0],
+                                [0, np.sin(np.pi*2/3), np.cos(np.pi*2/3), 0],
+                                [0, 0, 0, 1]])
+        test_mat = Matrix4x4(test_nparr)
+        assert r.to_matrix() == test_mat
