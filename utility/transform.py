@@ -54,4 +54,20 @@ class Rotation:
             raise ValueError
         if seq[0] not in 'xyz' or seq[1] not in 'xyz' or seq[2] not in 'xyz':
             raise ValueError
-
+        def rotate(axis, angle):
+            params = [np.cos(angle/2), 0, 0, 0]
+            i = int()
+            if str.lower(axis) == 'x':
+                i = 1
+            elif str.lower(axis) == 'y':
+                i = 2
+            elif str.lower(axis) == 'z':
+                i = 3
+            else:
+                raise ValueError
+            params[i] = np.sin(angle/2)
+            return Quaternion(params[0], params[1], params[2], params[3])
+        q = []
+        for i in range(3):
+            q.append(rotate(seq[i], angles[i]))
+        return cls(q[2]*q[1]*q[0])
