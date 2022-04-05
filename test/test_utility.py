@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 from utility.transform import Rotation
+from utility.bvh_tree import Node
 from data_structure.math import *
 
 class TestRotation:
@@ -34,3 +35,7 @@ class TestRotation:
         point = Vector3(0,0,1)
         rotation = Rotation.from_euler('xyz', 0, np.pi, 0)
         assert rotation.rotate(point) == Vector3(0,0,-1)
+
+class TestNode:
+    def test_node_initialize(self):
+        return Node()
