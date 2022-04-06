@@ -4,7 +4,7 @@ from data_structure.math import *
 class Node:
     def __init__(self, offset:Vector3=Vector3(0,0,0), name:str=""):
         self.parent = None
-        self.children = None
+        self.children = []
         self.offset = offset
 
         self._name = name
