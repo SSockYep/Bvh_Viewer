@@ -17,3 +17,6 @@ class Node:
 
     def add_child(self, child_node):
         self.children.append(child_node)
+
+    def set_parent(self, parent_node):
+        self.parent = parent_node
