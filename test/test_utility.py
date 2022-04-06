@@ -62,4 +62,10 @@ class TestNode:
         node = Node(name='parent')
         child_node = Node(name='child')
         node.add_child(child_node)
-        assert self.children[0] == child_node
+        assert node.children[0] == child_node
+
+    def test_set_parent(self):
+        node = Node(name='child')
+        parent_node = Node(name='parent')
+        node.set_parent(parent_node)
+        assert node.parent == parent_node
