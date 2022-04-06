@@ -57,3 +57,9 @@ class TestNode:
     def test_set_name_on_init(self):
         node = Node(offset=Vector3(1,1,1), name='test_name')
         assert node.get_name() == "test_name"
+    
+    def test_add_child(self):
+        node = Node(name='parent')
+        child_node = Node(name='child')
+        node.add_child(child_node)
+        assert self.children[0] == child_node

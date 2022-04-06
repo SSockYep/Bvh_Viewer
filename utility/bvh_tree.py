@@ -14,3 +14,6 @@ class Node:
     
     def set_name(self, name):
         self._name = name
+
+    def add_child(self, child_node):
+        self.children.append(child_node)
