@@ -48,3 +48,8 @@ class TestNode:
     def test_set_offset_on_init(self):
         node = Node(Vector3(1,1,1))
         assert node.offset == Vector3(1,1,1)
+
+    def test_set_node_name(self):
+        node = Node()
+        node.set_name("test_name")
+        assert node.get_name() == "test_name"
