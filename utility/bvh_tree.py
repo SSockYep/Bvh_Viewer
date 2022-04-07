@@ -20,6 +20,7 @@ class Node:
 
     def set_parent(self, parent_node):
         self.parent = parent_node
+        parent_node.add_child(self)
 
 class RootNode(Node):
     def __init__(self, offset:Vector3=Vector3(0,0,0), name:str="",
