@@ -30,6 +30,13 @@ class Node:
         self.parent = parent_node
         parent_node.add_child(self)
 
+    def get_heir(self):
+        return_string = self.get_name()
+        for child in self.children:
+            return_string += '\n\t' + child.get_heir()
+        return return_string
+
+
 class RootNode(Node):
     def __init__(self, offset:Vector3=Vector3(0,0,0), name:str="",
                  rotation=Rotation.from_euler('xyz',0,0,0)) :
