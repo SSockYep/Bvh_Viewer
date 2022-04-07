@@ -69,7 +69,7 @@ class TestNode:
         node = Node(name='child')
         parent_node = Node(name='parent')
         node.set_parent(parent_node)
-        assert node.parent == parent_node
+        assert node.parent == parent_node and node in parent_node.children
 
     
 class TestRootNode:
