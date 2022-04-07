@@ -77,6 +77,18 @@ class TestNode:
         parent_node.add_child(node)
         parent_node.delete_child('child')
         assert node not in parent_node.children
+        
+    def test_get_hier(self):
+        root = RootNode(name='root')
+        node1 = Node(name='node1')
+        node2 = Node(name='node2')
+        node3 = Node(name='node3')
+        node1.set_parent(root)
+        node2.set_parent(root)
+        node3.set_parent(node1)
+
+        assert root.get_hier() == "root\n\tnode1\n\t\tnode3\n\tnode2"
+
 
     
 class TestRootNode:
