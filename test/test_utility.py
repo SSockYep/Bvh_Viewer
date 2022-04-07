@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+from utility.bvh_parser import BvhParser
 from utility.transform import Rotation
 from utility.bvh_tree import Node, RootNode
 from data_structure.math import *
@@ -76,3 +77,8 @@ class TestRootNode:
         root = RootNode(Vector3(0,0,0), name='root')
         assert root.get_name() == 'root' and root.offset == Vector3(0,0,0) and \
                root.rotation == Rotation.from_euler('xyz', 0,0,0) and root.parent == None
+
+class TestParser:
+    def test_init(self):
+        parser = BvhParser(filename='test.bvh')
+        assert parser.filename == 'test.bvh'
