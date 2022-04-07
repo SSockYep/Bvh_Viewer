@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from utility.transform import Rotation
-from utility.bvh_tree import Node
+from utility.bvh_tree import Node, RootNode
 from data_structure.math import *
 
 class TestRotation:
@@ -69,3 +69,10 @@ class TestNode:
         parent_node = Node(name='parent')
         node.set_parent(parent_node)
         assert node.parent == parent_node
+
+    
+class TestRootNode:
+    def test_init(self):
+        root = RootNode(Vector3(0,0,0), name='root')
+        assert root.get_name() == 'root' and root.offset == Vector3(0,0,0) and \
+               root.rotation == Rotation.from_euler('xyz', 0,0,0) and root.parent == None
