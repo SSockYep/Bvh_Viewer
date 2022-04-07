@@ -1,7 +1,8 @@
-from re import M
 import pytest
 import numpy as np
 from data_structure.math import *
+from data_structure.animation import *
+from utility.bvh_tree import *
 
 class TestVector3():
     def test_initialize(self):
@@ -127,3 +128,12 @@ class TestMatrix4x4:
         mat = Matrix4x4(np.array([[0,0,1,0],[0,1,0,0],[-1,0,0,0],[0,0,0,1]]))
         vec = Vector3(1,0,0)
         assert mat@vec == Vector3(0, 0, -1)
+
+class TestPose:
+    def test_init(self):
+        root = RootNode()
+        node1 = Node()
+        node2 = Node()
+        node1.set_parent(root)
+        node2.set_parent(root)
+        assert Pose(root)
