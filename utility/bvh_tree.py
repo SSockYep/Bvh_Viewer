@@ -17,8 +17,16 @@ class Node:
 
     def add_child(self, child_node):
         self.children.append(child_node)
+        child_node.parent = self
+    
+    def delete_child(self, name):
+        for child in self.children:
+            if child.get_name() == name:
+                self.children.remove(child)
 
     def set_parent(self, parent_node):
+        if self.parent != None:
+            self.parent.delete_child(self.get_name())
         self.parent = parent_node
         parent_node.add_child(self)
 

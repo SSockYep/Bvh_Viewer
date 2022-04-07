@@ -70,6 +70,13 @@ class TestNode:
         parent_node = Node(name='parent')
         node.set_parent(parent_node)
         assert node.parent == parent_node and node in parent_node.children
+    
+    def test_delete_child(self):
+        node = Node(name='child')
+        parent_node = Node(name='parent')
+        parent_node.add_child(node)
+        parent_node.delete_child('child')
+        assert node not in parent_node.children
 
     
 class TestRootNode:
