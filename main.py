@@ -20,18 +20,14 @@ def main():
     glfw.make_context_current(window)
 
     renderer = Renderer()
-    camera = Camera()
+    cam = Camera()
     i = 0
     while not glfw.window_should_close(window):
         glfw.poll_events()
-        i += 1
-        i = i % 100
-        a = Vector3(0,0,0)
-        b = Vector3(i/100, i/100, i/100)
         renderer.clear()
-        camera.render_perspective()
+        renderer.render_perspective(cam)
         renderer.render_axis()
-        renderer.render_line(a, b)
+        renderer.render_line(Vector3(0,0,0), Vector3(1,1,1))
         glfw.swap_buffers(window)
     glfw.terminate()
 
