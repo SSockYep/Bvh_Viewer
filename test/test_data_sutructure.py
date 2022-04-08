@@ -69,6 +69,10 @@ class TestQuaternion:
         right = Quaternion(5,6,7,8)
         assert left * right == Quaternion(-60, 12, 30, 24)
 
+    def test_to_numpy_with_dtype(self):
+        vec = Vector3(1,2,3)
+        assert vec.to_numpy(np.uint32).dtype == np.uint32
+
 class TestMatrix4x4:
     def test_matrix_init(self):
         assert Matrix4x4()

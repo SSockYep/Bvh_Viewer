@@ -21,8 +21,8 @@ class Vector3:
             raise ValueError
         return cls(np_array[0], np_array[1], np_array[2])
 
-    def to_numpy(self):
-        return np.array([self.x, self.y, self.z])
+    def to_numpy(self, dtype=np.float32):
+        return np.array([self.x, self.y, self.z],dtype=dtype)
 
     def copy(self):
         return Vector3(self.x, self.y, self.z)
