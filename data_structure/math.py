@@ -1,7 +1,7 @@
 import numpy as np
 
 class Vector3:
-    def __init__(self, x=0, y=0, z=0):
+    def __init__(self, x:np.float32=0., y:np.float32=0., z:np.float32=0.):
         self.x = x
         self.y = y
         self.z = z
@@ -29,7 +29,7 @@ class Vector3:
 
 
 class Quaternion:
-    def __init__(self, w=1, x=0, y=0, z=0):
+    def __init__(self, w:np.float32=1, x:np.float32=0, y:np.float32=0, z:np.float32=0):
         self.w = w
         self.x = x
         self.y = y
