@@ -89,6 +89,10 @@ class TestNode:
 
         assert root.get_hier() == "root\n  node1\n    node3\n  node2\n"
 
+    def test_is_root(self):
+        node =Node()
+        assert node.is_root()
+
 class TestParser:
     def test_init(self):
         parser = BvhParser(filename='test.bvh')
