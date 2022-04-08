@@ -26,7 +26,7 @@ class Node:
                 self.children.remove(child)
 
     def set_parent(self, parent_node):
-        if self.parent != None:
+        if not self.is_root():
             self.parent.delete_child(self.get_name())
         self.parent = parent_node
         parent_node.add_child(self)
@@ -39,6 +39,9 @@ class Node:
             return_string += child_name +'\n'
         print(return_string)
         return return_string
+
+    def is_root(self):
+        return self.parent==None
 
     def _depth_first_trav(self):
         ret = []
