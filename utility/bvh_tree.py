@@ -1,6 +1,7 @@
 import numpy as np
 from data_structure.math import *
 from .transform import Rotation
+import pdb
 class Node:
     def __init__(self, offset:Vector3=Vector3(0,0,0), name:str=""):
         self.parent = None
@@ -30,18 +31,21 @@ class Node:
         self.parent = parent_node
         parent_node.add_child(self)
 
-    def get_heir(self):
-        return_string = self.get_name()
-        for child in self.children:
-            return_string += '\n\t' + child.get_heir()
+    def get_hier(self):
+        children_names = self._depth_first_trav()
+        print(children_names)
+        return_string = ''
+        for child_name in children_names:
+            return_string += child_name +'\n'
+        print(return_string)
         return return_string
 
-
-class RootNode(Node):
-    def __init__(self, offset:Vector3=Vector3(0,0,0), name:str="",
-                 rotation=Rotation.from_euler('xyz',0,0,0)) :
-        super().__init__(offset, name)
-        self.rotation = rotation
-
-    def set_parent(self):
-        raise RuntimeError
+    def _depth_first_trav(self):
+        ret = []
+        for child in self.children:
+            ret += child._depth_first_trav()
+        for i in range(len(ret)):
+            ret[i] = '  ' + ret[i]
+        print(ret)
+        ret = [self.get_name()] + ret
+        return ret

@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from utility.bvh_parser import BvhParser
 from utility.transform import Rotation
-from utility.bvh_tree import Node, RootNode
+from utility.bvh_tree import Node
 from data_structure.math import *
 
 class TestRotation:
@@ -79,7 +79,7 @@ class TestNode:
         assert node not in parent_node.children
         
     def test_get_hier(self):
-        root = RootNode(name='root')
+        root = Node(name='root')
         node1 = Node(name='node1')
         node2 = Node(name='node2')
         node3 = Node(name='node3')
@@ -87,15 +87,7 @@ class TestNode:
         node2.set_parent(root)
         node3.set_parent(node1)
 
-        assert root.get_hier() == "root\n\tnode1\n\t\tnode3\n\tnode2"
-
-
-    
-class TestRootNode:
-    def test_init(self):
-        root = RootNode(Vector3(0,0,0), name='root')
-        assert root.get_name() == 'root' and root.offset == Vector3(0,0,0) and \
-               root.rotation == Rotation.from_euler('xyz', 0,0,0) and root.parent == None
+        assert root.get_hier() == "root\n  node1\n    node3\n  node2\n"
 
 class TestParser:
     def test_init(self):

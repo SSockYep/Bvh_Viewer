@@ -49,7 +49,6 @@ class Quaternion:
         e, f, g, h = other.w, other.x, other.y, other.z
         res = Quaternion((a*e - b*f - c*g - d*h), (a*f + b*e + c*h - d*g),
                           (a*g - b*h + c*e + d*f), (a*h + b*g - c*f + d*e))
-        print(res)
         return res
 
     def conjugate(self):

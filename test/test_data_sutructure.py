@@ -131,7 +131,7 @@ class TestMatrix4x4:
 
 class TestPose:
     def test_init(self):
-        root = RootNode()
+        root = Node()
         node1 = Node()
         node2 = Node()
         node1.set_parent(root)
