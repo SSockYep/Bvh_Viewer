@@ -33,11 +33,13 @@ class Vector3:
         return self.x * other.x + self.y * other.y + self.z * other.z
 
     def __mul__(self, other):
-        return Vector3(
-            self.y * other.z - self.z * other.y,
-            self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x,
-        )
+        if type(other) == Vector3:
+            return Vector3(
+                self.y * other.z - self.z * other.y,
+                self.z * other.x - self.x * other.z,
+                self.x * other.y - self.y * other.x,
+            )
+        return Vector3(self.x * other, self.y * other, self.z * other)
 
     @classmethod
     def from_numpy(cls, np_array):
