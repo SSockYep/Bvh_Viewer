@@ -51,6 +51,23 @@ class TestVector3:
         test_vec = Vector3(3, 4, 5)
         assert test_vec.magitude() == np.sqrt(3 ** 2 + 4 ** 2 + 5 ** 2)
 
+    def test_add(self):
+        test_vec1 = Vector3(1, 2, 3)
+        test_vec2 = Vector3(4, 5, 6)
+        assert test_vec1 + test_vec2 == Vector3(5, 7, 9)
+
+    def test_sub(self):
+        test_vec1 = Vector3(1, 2, 3)
+        test_vec2 = Vector3(4, 5, 6)
+        assert test_vec1 - test_vec2 == Vector3(-3, -3, -3)
+
+    def test_div_by_scalar(self):
+        test_vec = Vector3(3, 6, 9)
+        assert test_vec / 3 == Vector3(1, 2, 3)
+
+    def test_dot_product(self):
+        assert Vector3(1, 2, 3) @ Vector3(4, 5, 6) == 4 + 10 + 18
+
 
 class TestQuaternion:
     def test_quaternion_init(self):
