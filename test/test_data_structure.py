@@ -74,6 +74,11 @@ class TestVector3:
         res_vec = vec1 * vec2
         assert res_vec == Vector3(-3, 6, -3)
 
+    def test_mul_by_scalar(self):
+        vec = Vector3(1, 2, 3)
+        scal = 5
+        assert vec * scal == Vector3(5, 10, 15)
+
 
 class TestQuaternion:
     def test_quaternion_init(self):
