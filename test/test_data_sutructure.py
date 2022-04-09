@@ -49,7 +49,7 @@ class TestVector3:
 
     def test_magnitude(self):
         test_vec = Vector3(3, 4, 5)
-        assert test_vec.magitude() == np.sqrt(3 ** 2 + 4 ** 2 + 5 ** 2)
+        assert test_vec.magnitude() == np.sqrt(3 ** 2 + 4 ** 2 + 5 ** 2)
 
     def test_add(self):
         test_vec1 = Vector3(1, 2, 3)
