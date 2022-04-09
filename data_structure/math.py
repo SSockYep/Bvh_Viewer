@@ -32,6 +32,13 @@ class Vector3:
     def __matmul__(self, other):  # self @ other: Vector dot product
         return self.x * other.x + self.y * other.y + self.z * other.z
 
+    def __mul__(self, other):
+        return Vector3(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x,
+        )
+
     @classmethod
     def from_numpy(cls, np_array):
         if type(np_array) != np.ndarray:
@@ -48,6 +55,12 @@ class Vector3:
 
     def copy(self):
         return Vector3(self.x, self.y, self.z)
+
+    def dot(self, other):
+        return self @ other
+
+    def cross(self, other):
+        return self * other
 
 
 class Quaternion:

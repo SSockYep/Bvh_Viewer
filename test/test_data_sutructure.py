@@ -68,6 +68,12 @@ class TestVector3:
     def test_dot_product(self):
         assert Vector3(1, 2, 3) @ Vector3(4, 5, 6) == 4 + 10 + 18
 
+    def test_cross_product(self):
+        vec1 = Vector3(1, 2, 3)
+        vec2 = Vector3(4, 5, 6)
+        res_vec = vec1 * vec2
+        assert res_vec == Vector3(-3, 6, -3)
+
 
 class TestQuaternion:
     def test_quaternion_init(self):
