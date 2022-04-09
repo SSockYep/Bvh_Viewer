@@ -10,6 +10,9 @@ class Vector3:
     def __str__(self):
         return "Vector3({}, {}, {})".format(self.x, self.y, self.z)
 
+    def __repr__(self):
+        return "Vector3({}, {}, {})".format(self.x, self.y, self.z)
+
     def __eq__(self, other):
         return (
             np.isclose(self.x, other.x)
@@ -33,12 +36,13 @@ class Vector3:
         return self.x * other.x + self.y * other.y + self.z * other.z
 
     def __mul__(self, other):
-        if type(other) == Vector3:
+        if type(other) == Vector3:  # self * other(Vector): Vector cross product
             return Vector3(
                 self.y * other.z - self.z * other.y,
                 self.z * other.x - self.x * other.z,
                 self.x * other.y - self.y * other.x,
             )
+        # self * other(scalar): Vector multipy by scarla
         return Vector3(self.x * other, self.y * other, self.z * other)
 
     @classmethod
@@ -86,17 +90,19 @@ class Quaternion:
         return "Quaternion({}, {}, {}, {})".format(self.w, self.x, self.y, self.z)
 
     def __mul__(self, other):
-        if not isinstance(other, Quaternion):
-            assert TypeError(other)
-        a, b, c, d = self.w, self.x, self.y, self.z
-        e, f, g, h = other.w, other.x, other.y, other.z
-        res = Quaternion(
-            (a * e - b * f - c * g - d * h),
-            (a * f + b * e + c * h - d * g),
-            (a * g - b * h + c * e + d * f),
-            (a * h + b * g - c * f + d * e),
+        if isinstance(other, Quaternion):
+            a, b, c, d = self.w, self.x, self.y, self.z
+            e, f, g, h = other.w, other.x, other.y, other.z
+            res = Quaternion(
+                (a * e - b * f - c * g - d * h),
+                (a * f + b * e + c * h - d * g),
+                (a * g - b * h + c * e + d * f),
+                (a * h + b * g - c * f + d * e),
+            )
+            return res
+        return Quaternion(
+            self.w * other, self.x * other, self.y * other, self.z * other
         )
-        return res
 
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)
