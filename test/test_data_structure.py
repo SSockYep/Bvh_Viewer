@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from data_structure.math import *
 from data_structure.animation import *
-from utility.bvh_tree import *
+from data_structure.bvh_tree import *
 
 
 class TestVector3:
@@ -196,3 +196,60 @@ class TestPose:
         node1.set_parent(root)
         node2.set_parent(root)
         assert Pose(root)
+
+
+class TestNode:
+    def test_node_initialize(self):
+        assert Node() != None
+
+    def test_offset(self):
+        node = Node()
+        node.offset = Vector3(1, 1, 1)
+        assert node.offset == Vector3(1, 1, 1)
+
+    def test_set_offset_on_init(self):
+        node = Node(Vector3(1, 1, 1))
+        assert node.offset == Vector3(1, 1, 1)
+
+    def test_set_node_name(self):
+        node = Node()
+        node.set_name("test_name")
+        assert node.get_name() == "test_name"
+
+    def test_set_name_on_init(self):
+        node = Node(offset=Vector3(1, 1, 1), name="test_name")
+        assert node.get_name() == "test_name"
+
+    def test_add_child(self):
+        node = Node(name="parent")
+        child_node = Node(name="child")
+        node.add_child(child_node)
+        assert node.children[0] == child_node
+
+    def test_set_parent(self):
+        node = Node(name="child")
+        parent_node = Node(name="parent")
+        node.set_parent(parent_node)
+        assert node.parent == parent_node and node in parent_node.children
+
+    def test_delete_child(self):
+        node = Node(name="child")
+        parent_node = Node(name="parent")
+        parent_node.add_child(node)
+        parent_node.delete_child("child")
+        assert node not in parent_node.children
+
+    def test_get_hier(self):
+        root = Node(name="root")
+        node1 = Node(name="node1")
+        node2 = Node(name="node2")
+        node3 = Node(name="node3")
+        node1.set_parent(root)
+        node2.set_parent(root)
+        node3.set_parent(node1)
+
+        assert root.get_hier() == "root\n  node1\n    node3\n  node2\n"
+
+    def test_is_root(self):
+        node = Node()
+        assert node.is_root()
