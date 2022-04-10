@@ -89,6 +89,9 @@ class Quaternion:
     def __str__(self):
         return "Quaternion({}, {}, {}, {})".format(self.w, self.x, self.y, self.z)
 
+    def __repr__(self):
+        return "Quaternion({}, {}, {}, {})".format(self.w, self.x, self.y, self.z)
+
     def __mul__(self, other):
         if isinstance(other, Quaternion):
             a, b, c, d = self.w, self.x, self.y, self.z

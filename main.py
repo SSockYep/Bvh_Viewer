@@ -29,8 +29,7 @@ def main():
         glfw.poll_events()
         renderer.clear()
         renderer.render_perspective(cam)
-        renderer.render_axis()
-        renderer.render_line(Vector3(0, 0, 0), Vector3(1, 1, 1))
+        renderer.render_global_axis()
         glfw.swap_buffers(window)
     glfw.terminate()
 

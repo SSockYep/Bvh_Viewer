@@ -17,7 +17,7 @@ class Renderer:
         glLoadIdentity()
 
     def render_perspective(self, cam):
-        gluPerspective(45, 1, 1, 100)
+        gluPerspective(cam.angle, 1, 1, 100)
         gluLookAt(
             cam.pos.x,
             cam.pos.y,
@@ -37,7 +37,7 @@ class Renderer:
         glVertex3fv(end.to_numpy())
         glEnd()
 
-    def render_axis(self):
+    def render_global_axis(self):
         glBegin(GL_LINES)
         glColor3ub(255, 0, 0)
         glVertex3fv(np.array([0.0, 0.0, 0.0]))
