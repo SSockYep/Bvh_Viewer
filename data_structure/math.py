@@ -127,6 +127,11 @@ class Matrix4x4:
         col = pair[1]
         return self._mat[row, col]
 
+    def __setitem__(self, pair, val):
+        row = pair[0]
+        col = pair[1]
+        self._mat[row, col] = val
+
     def __matmul__(self, other):
         if isinstance(other, Matrix4x4):
             return Matrix4x4(self._mat @ other._mat)
@@ -134,57 +139,3 @@ class Matrix4x4:
             np_vec = other.to_numpy()
             np_vec = np.append(np_vec, 1)
             return Vector3.from_numpy((self._mat @ np_vec)[:3])
-
-    @classmethod
-    def from_euler(cls, seq, *angles):
-        def rotate(axis, angle):
-            if axis == "x" or axis == "X":
-                return Matrix4x4(
-                    np.array(
-                        [
-                            [1, 0, 0, 0],
-                            [0, np.cos(angle), -np.sin(angle), 0],
-                            [0, np.sin(angle), np.cos(angle), 0],
-                            [0, 0, 0, 1],
-                        ]
-                    )
-                )
-            elif axis == "y" or axis == "Y":
-                return Matrix4x4(
-                    np.array(
-                        [
-                            [np.cos(angle), 0, np.sin(angle), 0],
-                            [0, 1, 0, 0],
-                            [-np.sin(angle), 0, np.cos(angle), 0],
-                            [0, 0, 0, 1],
-                        ]
-                    )
-                )
-            elif axis == "z" or axis == "Z":
-                return Matrix4x4(
-                    np.array(
-                        [
-                            [np.cos(angle), -np.sin(angle), 0, 0],
-                            [np.sin(angle), np.cos(angle), 0, 0],
-                            [0, 0, 1, 0],
-                            [0, 0, 0, 1],
-                        ]
-                    )
-                )
-            else:
-                raise ValueError
-
-        if type(seq) != str:
-            raise ValueError
-        if len(seq) != 3:
-            raise ValueError
-        if seq[0] == seq[1] or seq[1] == seq[2]:
-            raise ValueError
-        if seq[0] not in "xyz" or seq[1] not in "xyz" or seq[2] not in "xyz":
-            raise ValueError
-        if len(angles) != 3:
-            raise ValueError
-        mat0 = rotate(seq[0], angles[0])
-        mat1 = rotate(seq[1], angles[1])
-        mat2 = rotate(seq[2], angles[2])
-        return cls((mat0 @ mat1 @ mat2)._mat)

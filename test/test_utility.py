@@ -1,7 +1,8 @@
 import pytest
 import numpy as np
+from sympy import Matrix
 from utility.bvh_loader import BvhLoader
-from utility.transform import Rotation, Translation
+from utility.transform import Rotation, Transform, Translation
 from data_structure.bvh_tree import Node
 from data_structure.math import *
 
@@ -67,6 +68,19 @@ class TestRotation:
         point = Vector3(0, 0, 1)
         rotation = Rotation.from_euler("xyz", 0, np.pi, 0)
         assert rotation.rotate(point) == Vector3(0, 0, -1)
+
+
+class TestTransform:
+    def test_init(self):
+        assert Transform()
+
+    def test_to_matrix(self):
+        t = Translation.from_vector(Vector3(1, 1, 1))
+        r = Rotation.from_euler("xyz", np.pi / 2, 0, 0)
+        np_mat = np.array(
+            [[1, 0, 0, 1], [0, 0, -1, 1], [0, 1, 0, 1], [0, 0, 0, 1]], dtype=np.float
+        )
+        assert Transform(t, r).to_matrix() == Matrix4x4(np_mat)
 
 
 class TestLoader:

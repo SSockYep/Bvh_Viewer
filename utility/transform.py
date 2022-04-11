@@ -140,3 +140,19 @@ class Rotation:
         p = Quaternion(0, point.x, point.y, point.z)
         rotated = q * p * q_conj
         return Vector3(rotated.x, rotated.y, rotated.z)
+
+
+class Transform:
+    def __init__(self, trans: Translation = Translation(), rot: Rotation = Rotation()):
+        self.translation = trans
+        self.rotation = rot
+
+    def to_matrix(self):
+        rot_mat = self.rotation.to_matrix()
+        trans_mat = self.translation.to_matrix()
+
+        result_matrix = copy(rot_mat)
+        result_matrix[0, 3] = trans_mat[0, 3]
+        result_matrix[1, 3] = trans_mat[1, 3]
+        result_matrix[2, 3] = trans_mat[2, 3]
+        return result_matrix
