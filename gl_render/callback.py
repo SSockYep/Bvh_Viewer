@@ -1,43 +1,50 @@
-
 import numpy as np
-
+import tkinter
 from OpenGL.GL import *
 from OpenGL.GLU import *
-import glfw
 from enum import Enum
 from .camera import Camera
 
 
 class Mouse(Enum):
-    NONE = 1
-    LBUTTON = 2
-    RBUTTON = 3
-    MBUTTON = 4
+    NONE = 0
+    LBUTTON = 1
+    RBUTTON = 2
+    MBUTTON = 3
 
 
 class Callback:
-    def __init__(self, cam: Camera, window):
+    def __init__(self, cam: Camera, window: tkinter.Tk):
         self.cam = cam
-        self.mouse_x, self.mouse_y = glfw.get_cursor_pos(window)
+        self.mouse_x = window.winfo_pointerx() - window.winfo_rootx()
+        self.mouse_y = window.winfo_pointery() - window.winfo_rooty()
         self.mouse_button = Mouse.NONE
 
-    def cursor_callback(self, window, cur_x, cur_y):
+    def cursor_move_callback(self, event):
         if self.mouse_button == Mouse.MBUTTON:
-            self.cam.move((self.mouse_x - cur_x) / 100, (cur_y - self.mouse_y) / 100)
+            self.cam.move(
+                (self.mouse_x - event.x) / 100, (event.y - self.mouse_y) / 100
+            )
         elif self.mouse_button == Mouse.LBUTTON:
-            self.cam.rotate((cur_x - self.mouse_x) / 100, (cur_y - self.mouse_y) / 100)
+            self.cam.rotate(
+                (event.x - self.mouse_x) / 100, (event.y - self.mouse_y) / 100
+            )
         elif self.mouse_button == Mouse.RBUTTON:
-            self.cam.zoom((self.mouse_y - cur_y) / 10)
-        self.mouse_x = cur_x
-        self.mouse_y = cur_y
+            self.cam.zoom((self.mouse_y - event.y) / 10)
+        self.mouse_x = event.x
+        self.mouse_y = event.y
 
-    def mouse_callback(self, window, button, action, mods):
-        if action == glfw.PRESS and self.mouse_button == Mouse.NONE:
-            if button == glfw.MOUSE_BUTTON_MIDDLE:
-                self.mouse_button = Mouse.MBUTTON
-            elif button == glfw.MOUSE_BUTTON_LEFT:
-                self.mouse_button = Mouse.LBUTTON
-            elif button == glfw.MOUSE_BUTTON_RIGHT:
-                self.mouse_button = Mouse.RBUTTON
-        elif action == glfw.RELEASE:
-            self.mouse_button = Mouse.NONE
+    def lclick_callback(self, event):
+        print("L")
+        self.mouse_button = Mouse.LBUTTON
+
+    def mclick_callback(self, event):
+        print("M")
+        self.mouse_button = Mouse.MBUTTON
+
+    def rclick_callback(self, event):
+        print("R")
+        self.mouse_button = Mouse.RBUTTON
+
+    def release_callback(self, envent):
+        self.mouse_button = Mouse.NONE

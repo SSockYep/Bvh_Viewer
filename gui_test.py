@@ -1,9 +1,8 @@
 import numpy as np
-import glfw
-import wx
-
+import tkinter
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from pyopengltk import OpenGLFrame
 
 from data_structure.math import *
 from gl_render.renderer import *
@@ -12,58 +11,65 @@ from gl_render.callback import Callback
 from utility.bvh_loader import BvhLoader
 
 
-def draw_points():
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    glPointSize(10)
-    glColor3ub(255, 255, 255)
-    mat = np.eye(4)
-    mat[1, 3] = 1.0
-    mat[2, 3] = 1.0
-    glPushMatrix()
-    glBegin(GL_POINTS)
-    glVertex3fv(np.array([1.0, 0.0, 0.0]))
-    glEnd()
-    # glTranslate(0.,1.,1.,)
-    glMultTransposeMatrixf(mat)
-    glPushMatrix()
-    glBegin(GL_POINTS)
-    glVertex3fv(np.array([1.0, 0.0, 0.0]))
-    glEnd()
-    glMultTransposeMatrixf(mat)
-    glPushMatrix()
-    glBegin(GL_POINTS)
-    glVertex3fv(np.array([1.0, 0.0, 0.0]))
-    glEnd()
-    glPopMatrix()
-    glPopMatrix()
-    glPopMatrix()
+class testframe(OpenGLFrame):
+    def __init__(self, renderer, cam, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.renderer = renderer
+        self.cam = cam
+
+    def initgl(self):
+        self.renderer.clear()
+        self.renderer.render_perspective(self.cam)
+
+    def redraw(self):
+        self.renderer.clear()
+        self.renderer.render_perspective(self.cam)
+        self.renderer.render_global_axis()
+        self.draw_points()
+
+    def draw_points(self):
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        glPointSize(10)
+        glColor3ub(255, 255, 255)
+        mat = np.eye(4)
+        mat[1, 3] = 1.0
+        mat[2, 3] = 1.0
+        glPushMatrix()
+        glBegin(GL_POINTS)
+        glVertex3fv(np.array([1.0, 0.0, 0.0]))
+        glEnd()
+        # glTranslate(0.,1.,1.,)
+        glMultTransposeMatrixf(mat)
+        glPushMatrix()
+        glBegin(GL_POINTS)
+        glVertex3fv(np.array([1.0, 0.0, 0.0]))
+        glEnd()
+        glMultTransposeMatrixf(mat)
+        glPushMatrix()
+        glBegin(GL_POINTS)
+        glVertex3fv(np.array([1.0, 0.0, 0.0]))
+        glEnd()
+        glPopMatrix()
+        glPopMatrix()
+        glPopMatrix()
 
 
 def main():
-    if not glfw.init():
-        return
-    window = glfw.create_window(680, 480, "test", None, None)
-    if not window:
-        glfw.terminate()
-        return
-
-    glfw.make_context_current(window)
-
     renderer = Renderer()
     cam = Camera()
-    callback = Callback(cam, window)
-    glfw.set_mouse_button_callback(window, callback.mouse_callback)
-    glfw.set_cursor_pos_callback(window, callback.cursor_callback)
-    i = 0
-    while not glfw.window_should_close(window):
-        glfw.poll_events()
-        renderer.clear()
-        renderer.render_perspective(cam)
-        renderer.render_global_axis()
-        draw_points()
-        glfw.swap_buffers(window)
-    glfw.terminate()
+    root = tkinter.Tk()
+    callback = Callback(cam, root)
+    root.bind("<Motion>", callback.cursor_move_callback)
+    root.bind("<ButtonPress-1>", callback.lclick_callback)
+    root.bind("<ButtonPress-2>", callback.mclick_callback)
+    root.bind("<ButtonPress-3>", callback.rclick_callback)
+    root.bind("<ButtonRelease>", callback.release_callback)
+    app = testframe(renderer, cam, root, width=640, height=480)
+    app.pack(fill=tkinter.BOTH, expand=tkinter.YES)
+    app.animate = 1
+    app.after(100, app.printContext)
+    app.mainloop()
 
 
 if __name__ == "__main__":
