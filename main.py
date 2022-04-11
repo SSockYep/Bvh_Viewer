@@ -5,9 +5,9 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 from data_structure.math import *
-from ui.renderer import *
-from ui.camera import Camera
-from ui.callback import Callback
+from gl_render.renderer import *
+from gl_render.camera import Camera
+from gl_render.callback import Callback
 from utility.bvh_loader import BvhLoader
 
 import pdb

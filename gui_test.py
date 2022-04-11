@@ -1,5 +1,6 @@
 import numpy as np
 import glfw
+import wx
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -24,16 +25,13 @@ def draw_points():
     glVertex3fv(np.array([1.0, 0.0, 0.0]))
     glEnd()
     # glTranslate(0.,1.,1.,)
-    glLoadTransposeMatrixf(mat)
+    glMultTransposeMatrixf(mat)
     glPushMatrix()
     glBegin(GL_POINTS)
     glVertex3fv(np.array([1.0, 0.0, 0.0]))
     glEnd()
-    glLoadTransposeMatrixf(mat)
+    glMultTransposeMatrixf(mat)
     glPushMatrix()
-    glBegin(GL_POINTS)
-    glVertex3fv(np.array([1.0, 0.0, 0.0]))
-    glEnd()
     glBegin(GL_POINTS)
     glVertex3fv(np.array([1.0, 0.0, 0.0]))
     glEnd()
