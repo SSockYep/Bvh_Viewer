@@ -1,7 +1,28 @@
-from matplotlib.pyplot import magma
 import numpy as np
 from copy import copy
 from data_structure.math import *
+
+
+class Translation:
+    def __init__(self, v: Vector3 = Vector3()):
+        self.vec = copy(v)
+
+    @classmethod
+    def from_vector(cls, v: Vector3):
+        return cls(v)
+
+    @classmethod
+    def from_matrix(cls, m: Matrix4x4):
+        v = Vector3(m[0, 3], m[1, 3], m[2, 3])
+        return cls(v)
+
+    def to_vector(self):
+        return copy(self.vec)
+
+    def to_matrix(self):
+        mat = np.eye(4)
+        mat[:3, 3] = self.vec.to_numpy()
+        return Matrix4x4(mat)
 
 
 class Rotation:
@@ -82,7 +103,7 @@ class Rotation:
         return cls(q[2] * q[1] * q[0])
 
     def to_quaternion(self):
-        return self.quaternion
+        return copy(self.quaternion)
 
     def to_matrix(self):
         q = self.quaternion

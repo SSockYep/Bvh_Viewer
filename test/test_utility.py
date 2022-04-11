@@ -1,9 +1,27 @@
 import pytest
 import numpy as np
 from utility.bvh_loader import BvhLoader
-from utility.transform import Rotation
+from utility.transform import Rotation, Translation
 from data_structure.bvh_tree import Node
 from data_structure.math import *
+
+
+class TestTranslation:
+    def test_from_vector(self):
+        assert Translation.from_vector(Vector3(1, 2, 3)).vec == Vector3(1, 2, 3)
+
+    def test_from_mat(self):
+        mat = np.eye(4)
+        mat[:, 3] = [1, 2, 3, 1]
+        assert Translation.from_matrix(mat).vec == Vector3(1, 2, 3)
+
+    def test_to_vector(self):
+        assert Translation(Vector3(12, 3, 4)).to_vector() == Vector3(12, 3, 4)
+
+    def test_to_mat(self):
+        mat = np.eye(4)
+        mat[:, 3] = [1, 2, 3, 1]
+        assert Translation(Vector3(1, 2, 3)).to_matrix() == Matrix4x4(mat)
 
 
 class TestRotation:
@@ -55,4 +73,3 @@ class TestLoader:
     def test_init(self):
         parser = BvhLoader(filename="test.bvh")
         assert parser.filename == "test.bvh"
-
