@@ -253,3 +253,11 @@ class TestNode:
     def test_is_root(self):
         node = Node()
         assert node.is_root()
+
+
+class TestBvhTree:
+    def test_num_nodes(self):
+        node1 = Node()
+        node2 = Node(parent=node1)
+        tree = BvhTree(node1, [node1, node2])
+        assert tree.num_nodes() == 2

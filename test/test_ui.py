@@ -23,6 +23,6 @@ class TestCamera:
         assert cam.pos == Vector3(1, 1, 5) and cam.lookat == Vector3(1, 1, 0)
 
     def test_rotate(self):
-        cam = Camera(pos=Vector3(0, 0, 5), lookat=Vector3(0, 0, 0))
-        cam.rotate(0, np.pi / 2, 0, "xyz")
-        assert cam.pos == Vector3(5, 0, 0) and cam.lookat == Vector3(0, 0, 0)
+        cam = Camera(pos=Vector3(5, 0, 0), lookat=Vector3(0, 0, 0))
+        cam.rotate(np.pi/2, 0)
+        assert cam.pos == Vector3(0, 0, -5) and cam.lookat == Vector3(0, 0, 0)

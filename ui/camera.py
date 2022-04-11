@@ -17,23 +17,26 @@ class Camera:
         self.lookat = self.lookat + cam_x * x_move + cam_y * y_move
 
     def rotate(self, x, y):
+        # moving mouse vertical(y) => rotate about local axis x(cam_x)
+        # moving mouse horizontal(y) => rotate about local axis y(cam_y)
         cam_x, cam_y, cam_z = self._get_local_axis()
-        cam_x = cam_x * np.sin(x / 2)
-        cam_y = cam_y * np.sin(y / 2)
         local_pos = self.pos - self.lookat
-        if cam_z.y < -0.99 and x > 0:
+        if cam_z.y < -0.99 and x > 0: 
             rot_x = Rotation.from_quaternion(Quaternion(1, 0, 0, 0))
         elif cam_z.y > 0.99 and x < 0:
             rot_x = Rotation.from_quaternion(Quaternion(1, 0, 0, 0))
         else:
+            cam_x = cam_x * np.sin(y/2)
             rot_x = Rotation.from_quaternion(
                 Quaternion(np.cos(y / 2), cam_x.x, cam_x.y, cam_x.z)
             )
+        cam_y = cam_y * np.sin(x/2)
         rot_y = Rotation.from_quaternion(
             Quaternion(np.cos(x / 2), cam_y.x, cam_y.y, cam_y.z)
         )
         rotated = rot_x.rotate(local_pos)
         rotated = rot_y.rotate(rotated)
+        
         self.pos = rotated + self.lookat
 
     def zoom(self, value):

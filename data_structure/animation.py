@@ -4,16 +4,11 @@ from data_structure.bvh_tree import *
 
 
 class Pose:
-    def __init__(self, tree: BvhTree, motion: list):
+    def __init__(self, tree: BvhTree, rotation_data: list):
         self.bone = tree
-        self.motion = copy.copy(motion)
+        self.rotations = copy.copy(rotation_data)
 
     def calc_rotations(self):
-        m = copy.copy(self.motion)
-        bone_idx = 0
-        while len(m) > 0:
-            bone = self.bone.get_node_by_index(bone_idx)
-            if bone.is_root():
-                if len(bone.channels) != 6:
-                    raise ValueError
-                pos = Vector3()  # blah blah
+        m = copy.copy(self.rotations)
+        for i in range(len(tree.num_nodes())):
+            pass

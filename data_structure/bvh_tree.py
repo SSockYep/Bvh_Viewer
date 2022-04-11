@@ -1,6 +1,6 @@
 import numpy as np
 from data_structure.math import *
-from ..utility.transform import Rotation
+from utility.transform import Rotation
 import pdb
 
 
@@ -69,7 +69,7 @@ class BvhTree:
         self._node_list = node_list
         self._name_dict = {}
         for i in range(len(node_list)):
-            self._name_dict[node_list[i].name] = i
+            self._name_dict[node_list[i].get_name()] = i
 
     def get_node_by_index(self, index):
         return self._node_list[index]
@@ -79,3 +79,6 @@ class BvhTree:
 
     def print_hier(self):
         print(self.root.get_hier())
+    
+    def num_nodes(self):
+        return len(self._node_list)
