@@ -9,9 +9,9 @@ from data_structure.bvh_tree import *
 
 class Pose:
     class _ChannelParser:
-        def __init__(self, **kwargs):
-            self.channels = kwargs["channels"]
-            self.values = kwargs["values"]
+        def __init__(self, channels, values):
+            self.channels = channels
+            self.values = values
 
         def parse(self):
             pos = Vector3()
@@ -41,22 +41,19 @@ class Pose:
         if len(frame_data) != tree.num_nodes() * 3 + 3:
             raise ValueError
         # load index -> get translation and rotaition of frame data
-        self.bone = tree
+        self.bones = tree
         self.frame_data = copy.copy(frame_data)
         # get root data
         data_index = 0
-        self.transforms = [None for _ in range(self.bone.num_nodes())]
-        if self.bone.get_node_by_index(0) != self.bone.root:
+        self.transforms = [None for _ in range(self.bones.num_nodes())]
+        if self.bones.get_node_by_index(0) != self.bones.root:
             raise ValueError
-        for i in range(self.bone.num_nodes()):
-            node = self.bone.get_node_by_index(i)
-            kwargs = {}
+        for i in range(self.bones.num_nodes()):
+            node = self.bones.get_node_by_index(i)
             channels = node.channels
             values = frame_data[data_index : data_index + len(channels)]
             data_index += len(channels)
-            kwargs["channels"] = channels
-            kwargs["values"] = values
-            parser = self._ChannelParser(kwargs)
+            parser = self._ChannelParser(channels, values)
             translation, rotation = parser.parse()
             if len(channels) == 3:
                 translation = Translation.from_vector(node.offset)
@@ -70,3 +67,6 @@ class Animation:
         self.poses = []
         for v in motion:
             self.poses.append(Pose(tree, v))
+
+    def get_pose(self, frame):
+        return self.poses[frame]

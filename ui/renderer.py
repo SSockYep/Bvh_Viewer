@@ -1,6 +1,7 @@
 import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from data_structure.animation import Pose
 
 from data_structure.math import *
 from .camera import Camera
@@ -17,6 +18,8 @@ class Renderer:
         glLoadIdentity()
 
     def render_perspective(self, cam):
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
         gluPerspective(cam.angle, 1, 1, 100)
         gluLookAt(
             cam.pos.x,
@@ -31,13 +34,52 @@ class Renderer:
         )
 
     def render_line(self, start, end):
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
         glBegin(GL_LINES)
         glColor3ub(255, 255, 255)
         glVertex3fv(start.to_numpy())
         glVertex3fv(end.to_numpy())
         glEnd()
 
+    def render_pose(self, pose):
+        root = pose.bones.root
+        skeleton = pose.bones
+        glMatrixMode(GL_MODELVIEW)
+        glPointSize(5)
+        glLoadIdentity()
+        glPushMatrix()
+        glScale(10, 10, 10)
+        glPushMatrix()
+
+        def dfs(node):
+            print(glGetFloatv(GL_MODELVIEW_MATRIX))
+
+            idx = skeleton.get_index_of_node(node)
+            matrix = pose.transforms[idx].to_matrix().to_numpy()
+            glLoadMatrixf(matrix)
+            glBegin(GL_POINTS)
+            glColor3ub(255, 255, 255)
+            glEnd()
+            glPushMatrix()
+
+            # translation = pose.transforms[idx].translation.to_vector()
+            # rotation = pose.transforms[idx].rotation.to_quaternion()
+            # glTranslatef(translation.x, translation.y, translation.z)
+            # glPushMatrix()
+
+            for child in node.children:
+                dfs(child)
+            glPopMatrix()
+            # glPopMatrix()
+
+        dfs(root)
+        glPopMatrix()
+        glPopMatrix()
+
     def render_global_axis(self):
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
         glBegin(GL_LINES)
         glColor3ub(255, 0, 0)
         glVertex3fv(np.array([0.0, 0.0, 0.0]))

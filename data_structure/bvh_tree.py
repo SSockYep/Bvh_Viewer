@@ -31,6 +31,9 @@ class Node:
             hash_val += hash(channel)
         return hash_val
 
+    def __repr__(self):
+        return self._name
+
     def get_name(self):
         return self._name
 

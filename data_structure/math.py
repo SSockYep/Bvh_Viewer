@@ -139,3 +139,6 @@ class Matrix4x4:
             np_vec = other.to_numpy()
             np_vec = np.append(np_vec, 1)
             return Vector3.from_numpy((self._mat @ np_vec)[:3])
+
+    def to_numpy(self):
+        return np.copy(self._mat)

@@ -1,4 +1,5 @@
 from multiprocessing.sharedctypes import Value
+from data_structure.animation import Animation
 from data_structure.math import *
 from data_structure.bvh_tree import Node, BvhTree
 
@@ -6,10 +7,9 @@ from data_structure.bvh_tree import Node, BvhTree
 class BvhLoader:
     def __init__(self, filename):
         self.filename = filename
-        skeleton, frames, frame_time, motion = self.parse(filename)
-        self.skeleton = skeleton
 
-    def parse(self, filename):
+    def parse(self):
+        filename = self.filename
         with open(filename, "r") as f:
             lines = f.readlines()
             lines = list(map(str.strip, lines))
@@ -18,6 +18,7 @@ class BvhLoader:
             node_list = []
             root = None
             node = None
+            motion = []
             for line in lines:
                 if line[0].upper() == "HIERARCHY":
                     pass
@@ -52,7 +53,7 @@ class BvhLoader:
                 elif line[0].upper() == "FRAME" and line[1].upper() == "TIME:":
                     frame_time = float(line[2])
                 else:
-                    motion = list(map(float, line))
-
-            return (BvhTree(root, node_list), frames, frame_time, motion)
-
+                    motion.append(list(map(float, line)))
+            tree = BvhTree(root, node_list)
+            animation = Animation(tree, frames, frame_time, motion)
+            return animation

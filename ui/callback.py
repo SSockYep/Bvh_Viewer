@@ -25,7 +25,7 @@ class Callback:
         if self.mouse_button == Mouse.MBUTTON:
             self.cam.move((self.mouse_x - cur_x) / 100, (cur_y - self.mouse_y) / 100)
         elif self.mouse_button == Mouse.LBUTTON:
-            self.cam.rotate((cur_y - self.mouse_y) / 100, (cur_x - self.mouse_x) / 100)
+            self.cam.rotate((cur_x - self.mouse_x) / 100, (cur_y - self.mouse_y) / 100)
         elif self.mouse_button == Mouse.RBUTTON:
             self.cam.zoom((self.mouse_y - cur_y) / 10)
         self.mouse_x = cur_x
