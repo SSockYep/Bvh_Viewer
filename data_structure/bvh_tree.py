@@ -57,11 +57,9 @@ class Node:
 
     def get_hier(self):
         children_names = self._depth_first_trav()
-        print(children_names)
         return_string = ""
         for child_name in children_names:
             return_string += child_name + "\n"
-        print(return_string)
         return return_string
 
     def is_root(self):

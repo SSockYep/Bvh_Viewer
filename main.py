@@ -10,6 +10,8 @@ from ui.camera import Camera
 from ui.callback import Callback
 from utility.bvh_loader import BvhLoader
 
+import pdb
+
 
 def main():
     if not glfw.init():
@@ -29,13 +31,13 @@ def main():
     glfw.set_cursor_pos_callback(window, callback.cursor_callback)
     i = 0
     while not glfw.window_should_close(window):
-        i += 1
-        i = i % animation.frame
         glfw.poll_events()
         renderer.clear()
         renderer.render_perspective(cam)
         renderer.render_global_axis()
-        renderer.render_pose(animation.get_pose(i))
+        renderer.render_pose(animation.get_pose(i), scale=0.01)
+        i = (i + 1) % animation.frame
+        glfw.wait_events_timeout(animation.frame_time)
         glfw.swap_buffers(window)
     glfw.terminate()
 

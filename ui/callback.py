@@ -1,10 +1,10 @@
-from lzma import MODE_FAST
+
 import numpy as np
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import glfw
-from prometheus_client import Enum
+from enum import Enum
 from .camera import Camera
 
 

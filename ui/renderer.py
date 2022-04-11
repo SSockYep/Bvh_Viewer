@@ -1,8 +1,10 @@
 import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from data_structure.animation import Pose
 
+import glfw
+
+from data_structure.animation import Pose
 from data_structure.math import *
 from .camera import Camera
 
@@ -42,39 +44,32 @@ class Renderer:
         glVertex3fv(end.to_numpy())
         glEnd()
 
-    def render_pose(self, pose):
+    def render_pose(self, pose, scale=1.0):
         root = pose.bones.root
         skeleton = pose.bones
-        glMatrixMode(GL_MODELVIEW)
+
         glPointSize(5)
+        glColor3ub(255, 255, 255)
+
+        glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        glPushMatrix()
-        glScale(10, 10, 10)
+        glScalef(scale, scale, scale)
         glPushMatrix()
 
         def dfs(node):
-            print(glGetFloatv(GL_MODELVIEW_MATRIX))
-
             idx = skeleton.get_index_of_node(node)
             matrix = pose.transforms[idx].to_matrix().to_numpy()
-            glLoadMatrixf(matrix)
-            glBegin(GL_POINTS)
-            glColor3ub(255, 255, 255)
-            glEnd()
+            glMultTransposeMatrixf(matrix)
             glPushMatrix()
-
-            # translation = pose.transforms[idx].translation.to_vector()
-            # rotation = pose.transforms[idx].rotation.to_quaternion()
-            # glTranslatef(translation.x, translation.y, translation.z)
-            # glPushMatrix()
+            glBegin(GL_POINTS)
+            glVertex3f(0.0, 0.0, 0.0)
+            glEnd()
 
             for child in node.children:
                 dfs(child)
             glPopMatrix()
-            # glPopMatrix()
 
         dfs(root)
-        glPopMatrix()
         glPopMatrix()
 
     def render_global_axis(self):
