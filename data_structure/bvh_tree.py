@@ -6,7 +6,10 @@ import pdb
 
 class Node:
     def __init__(
-        self, offset: Vector3 = Vector3(0, 0, 0), name: str = "", parent=None,
+        self,
+        offset: Vector3 = Vector3(0, 0, 0),
+        name: str = "",
+        parent=None,
     ):
         self.children = []
         self.offset = offset
@@ -17,6 +20,16 @@ class Node:
             self.parent = None
         self._name = name
         self.channels = []
+
+    def __hash__(self):
+        hash_val = hash(self._name)
+        hash_val += (
+            2 * hash(self.offset.x) + 3 * hash(self.offset.y) + 4 * hash(self.offset.z)
+        )
+        hash_val += 5 * hash(len(self.channels))
+        for channel in self.channels:
+            hash_val += hash(channel)
+        return hash_val
 
     def get_name(self):
         return self._name
@@ -68,8 +81,10 @@ class BvhTree:
         self.root = root
         self._node_list = node_list
         self._name_dict = {}
+        self._node_dict = {}
         for i in range(len(node_list)):
             self._name_dict[node_list[i].get_name()] = i
+            self._node_dict[node_list[i]] = i
 
     def get_node_by_index(self, index):
         return self._node_list[index]
@@ -77,8 +92,11 @@ class BvhTree:
     def get_node_by_name(self, name):
         return self._node_list[self._name_dict[name]]
 
+    def get_index_of_node(self, node):
+        return self._node_dict[node]
+
     def print_hier(self):
         print(self.root.get_hier())
-    
+
     def num_nodes(self):
         return len(self._node_list)

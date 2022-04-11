@@ -1,14 +1,72 @@
 import copy
+import numpy as np
+
+from utility.transform import Transform, Translation
+
 from .math import *
 from data_structure.bvh_tree import *
 
 
 class Pose:
-    def __init__(self, tree: BvhTree, rotation_data: list):
-        self.bone = tree
-        self.rotations = copy.copy(rotation_data)
+    class _ChannelParser:
+        def __init__(self, **kwargs):
+            self.channels = kwargs["channels"]
+            self.values = kwargs["values"]
 
-    def calc_rotations(self):
-        m = copy.copy(self.rotations)
-        for i in range(len(tree.num_nodes())):
-            pass
+        def parse(self):
+            pos = Vector3()
+            rot_seq = ""
+            rot_angles = []
+            for i in range(len(self.channels)):
+                if self.channels[i].upper() == "XPOSITION":
+                    pos.x = self.values[i]
+                elif self.channels[i].upper() == "YPOSITION":
+                    pos.y = self.values[i]
+                elif self.channels[i].upper() == "ZPOSITION":
+                    pos.z = self.values[i]
+                elif self.channels[i].upper() == "XROTATION":
+                    rot_seq += "x"
+                    rot_angles.append(np.deg2rad(self.values[i]))
+                elif self.channels[i].upper() == "YROTATION":
+                    rot_seq += "y"
+                    rot_angles.append(np.deg2rad(self.values[i]))
+                elif self.channels[i].upper() == "ZROTATION":
+                    rot_seq += "z"
+                    rot_angles.append(np.deg2rad(self.values[i]))
+            trans = Translation.from_vector(pos)
+            rot = Rotation.from_euler(rot_seq, rot_angles)
+            return trans, rot
+
+    def __init__(self, tree: BvhTree, frame_data: list):
+        if len(frame_data) != tree.num_nodes() * 3 + 3:
+            raise ValueError
+        # load index -> get translation and rotaition of frame data
+        self.bone = tree
+        self.frame_data = copy.copy(frame_data)
+        # get root data
+        data_index = 0
+        self.transforms = [None for _ in range(self.bone.num_nodes())]
+        if self.bone.get_node_by_index(0) != self.bone.root:
+            raise ValueError
+        for i in range(self.bone.num_nodes()):
+            node = self.bone.get_node_by_index(i)
+            kwargs = {}
+            channels = node.channels
+            values = frame_data[data_index : data_index + len(channels)]
+            data_index += len(channels)
+            kwargs["channels"] = channels
+            kwargs["values"] = values
+            parser = self._ChannelParser(kwargs)
+            translation, rotation = parser.parse()
+            if len(channels) == 3:
+                translation = Translation.from_vector(node.offset)
+            self.transforms[i] = Transform(translation, rotation)
+
+
+class Animation:
+    def __init__(self, tree, frame, frame_time, motion):
+        self.frame = frame
+        self.frame_time = frame_time
+        self.poses = []
+        for v in motion:
+            self.poses.append(Pose(tree, v))
