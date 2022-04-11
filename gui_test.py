@@ -65,7 +65,7 @@ def main():
     root.bind("<ButtonPress-2>", callback.mclick_callback)
     root.bind("<ButtonPress-3>", callback.rclick_callback)
     root.bind("<ButtonRelease>", callback.release_callback)
-    app = testframe(renderer, cam, root, width=640, height=480)
+    app = testframe(renderer, cam, root, width=800, height=600)
     app.pack(fill=tkinter.BOTH, expand=tkinter.YES)
     app.animate = 1
     app.after(100, app.printContext)

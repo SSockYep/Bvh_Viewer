@@ -35,15 +35,12 @@ class Callback:
         self.mouse_y = event.y
 
     def lclick_callback(self, event):
-        print("L")
         self.mouse_button = Mouse.LBUTTON
 
     def mclick_callback(self, event):
-        print("M")
         self.mouse_button = Mouse.MBUTTON
 
     def rclick_callback(self, event):
-        print("R")
         self.mouse_button = Mouse.RBUTTON
 
     def release_callback(self, envent):
