@@ -1,5 +1,9 @@
+from re import S
 import tkinter
+from turtle import color
+from click import option
 from pyopengltk import OpenGLFrame
+from pytest import skip
 
 from ui.tkutil import tkScrollController
 
@@ -45,7 +49,14 @@ class tkUtilFrame(tkinter.Frame):
         self.scroll_controller = tkScrollController(
             self.aniframe_scroll, int(animation.frame_time * 1000)
         )
-
+        option_list = ["None"]
+        for i in range(animation.skeleton.num_nodes()):
+            node = animation.skeleton.get_node_by_index(i)
+            option_list.append(node.get_name())
+        self.v = tkinter.StringVar()
+        self.v.set(option_list[0])
+        self.joint_option = tkinter.OptionMenu(self, self.v, *option_list)
+        self.joint_option.configure(width=70)
         self.play_button = tkinter.Button(
             self,
             text="play",
@@ -70,14 +81,16 @@ class tkUtilFrame(tkinter.Frame):
             bitmap="@assets/ico_toend.xbm",
             command=self.scroll_controller.toend,
         )
+        self.option_label = tkinter.Label(self, text="select joint: ")
 
-        self.columnconfigure(0, weight=5)
-        self.columnconfigure(3, weight=5)
-
-        self.tostart_button.grid(row=0, column=0, sticky=tkinter.E, padx=25, pady=5)
-        self.play_button.grid(row=0, column=1, padx=3, pady=5)
-        self.pause_button.grid(row=0, column=2, padx=3, pady=5)
-        self.toend_button.grid(row=0, column=3, sticky=tkinter.W, padx=25, pady=5)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(3, weight=1)
+        self.option_label.grid(row=0, column=0, columnspan=2, sticky=tkinter.E, pady=10)
+        self.joint_option.grid(row=0, column=2, columnspan=2, sticky=tkinter.W, pady=10)
+        self.tostart_button.grid(row=1, column=0, sticky=tkinter.E, padx=25, pady=5)
+        self.play_button.grid(row=1, column=1, padx=3, pady=5)
+        self.pause_button.grid(row=1, column=2, padx=3, pady=5)
+        self.toend_button.grid(row=1, column=3, sticky=tkinter.W, padx=25, pady=5)
         self.aniframe_scroll.grid(
-            row=1, column=0, columnspan=4, padx=5, pady=5, sticky=tkinter.EW
+            row=2, column=0, columnspan=4, padx=50, pady=5, sticky=tkinter.EW
         )
