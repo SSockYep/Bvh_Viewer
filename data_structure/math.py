@@ -42,8 +42,11 @@ class Vector3:
                 self.z * other.x - self.x * other.z,
                 self.x * other.y - self.y * other.x,
             )
-        # self * other(scalar): Vector multipy by scarla
+        # self * other(scalar): Vector multipy by scalar
         return Vector3(self.x * other, self.y * other, self.z * other)
+
+    def __truediv__(self, other):  # self / scalar
+        return Vector3(self.x / other, self.y / other, self.z / other)
 
     @classmethod
     def from_numpy(cls, np_array):

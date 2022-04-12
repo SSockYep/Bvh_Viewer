@@ -36,6 +36,13 @@ class tkRenderFrame(OpenGLFrame):
         self.renderer.render_pose(self.skeleton, pose)
         if self.selected_joint != "None":
             self.renderer.render_joint_pos(self.selected_joint, self.skeleton, pose)
+            if self.frame_now > 0:
+                self.renderer.render_joint_velocity(
+                    self.selected_joint,
+                    self.skeleton,
+                    self.animation,
+                    self.frame_now,
+                )
         # self.renderer.render_pose() ## Get Pose idx
 
 
@@ -58,7 +65,7 @@ class tkUtilFrame(tkinter.Frame):
         self.selected_joint = tkinter.StringVar()
         self.selected_joint.set(option_list[0])
         self.joint_option = tkinter.OptionMenu(self, self.selected_joint, *option_list)
-        self.joint_option.configure(width=70)
+        self.joint_option.configure(width=35)
         self.play_button = tkinter.Button(
             self,
             text="play",
@@ -85,14 +92,21 @@ class tkUtilFrame(tkinter.Frame):
         )
         self.option_label = tkinter.Label(self, text="select joint: ")
 
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(3, weight=1)
+        self.columnconfigure(0, weight=3)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(3, weight=3)
+
         self.option_label.grid(row=0, column=0, columnspan=2, sticky=tkinter.E, pady=10)
-        self.joint_option.grid(row=0, column=2, columnspan=2, sticky=tkinter.W, pady=10)
-        self.tostart_button.grid(row=1, column=0, sticky=tkinter.E, padx=25, pady=5)
-        self.play_button.grid(row=1, column=1, padx=3, pady=5)
-        self.pause_button.grid(row=1, column=2, padx=3, pady=5)
-        self.toend_button.grid(row=1, column=3, sticky=tkinter.W, padx=25, pady=5)
+        self.joint_option.grid(
+            row=0, column=2, columnspan=2, sticky=tkinter.EW, pady=10, padx=25
+        )
+
+        self.tostart_button.grid(row=1, column=0, sticky=tkinter.W, padx=25, pady=5)
+        self.play_button.grid(row=1, column=1, padx=3, pady=5, sticky=tkinter.E)
+        self.pause_button.grid(row=1, column=2, padx=3, pady=5, sticky=tkinter.W)
+        self.toend_button.grid(row=1, column=3, sticky=tkinter.E, padx=25, pady=5)
+
         self.aniframe_scroll.grid(
             row=2, column=0, columnspan=4, padx=50, pady=5, sticky=tkinter.EW
         )
