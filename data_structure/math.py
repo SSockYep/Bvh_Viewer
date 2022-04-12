@@ -122,10 +122,25 @@ class Matrix4x4:
     def __eq__(self, other):
         return np.allclose(self._mat, other._mat)
 
+    def __str__(self):
+        return "Matrix4x4: " + self._mat.__str__()
+
+    def __repr__(self):
+        return "Matrix4x4: " + self._mat.__str__()
+
     def __getitem__(self, pair):
         row = pair[0]
         col = pair[1]
         return self._mat[row, col]
+
+    def __add__(self, other):
+        if isinstance(other, Matrix4x4):
+            return Matrix4x4(self._mat + other._mat)
+        elif isinstance(other, Vector3):
+            mat = self._mat.copy()
+            mat[:3, 3] = other.to_numpy()
+            return Matrix4x4(mat)
+        raise TypeError
 
     def __setitem__(self, pair, val):
         row = pair[0]

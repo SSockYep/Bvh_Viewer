@@ -17,13 +17,17 @@ class Pose:
             pos = Vector3()
             rot_seq = ""
             rot_angles = []
+            is_root = False
             for i in range(len(self.channels)):
                 if self.channels[i].upper() == "XPOSITION":
                     pos.x = self.values[i]
+                    is_root = True
                 elif self.channels[i].upper() == "YPOSITION":
                     pos.y = self.values[i]
+                    is_root = True
                 elif self.channels[i].upper() == "ZPOSITION":
                     pos.z = self.values[i]
+                    is_root = True
                 elif self.channels[i].upper() == "XROTATION":
                     rot_seq += "x"
                     rot_angles.append(np.deg2rad(self.values[i]))
@@ -33,9 +37,12 @@ class Pose:
                 elif self.channels[i].upper() == "ZROTATION":
                     rot_seq += "z"
                     rot_angles.append(np.deg2rad(self.values[i]))
-            trans = Translation.from_vector(pos)
+            if is_root:
+                root_trans = Translation.from_vector(pos)
+            else:
+                root_trans = None
             rot = Rotation.from_euler(rot_seq, rot_angles)
-            return trans, rot
+            return rot, root_trans
 
     def __init__(self, tree: BvhTree, frame_data: list):
         if len(frame_data) != tree.num_nodes() * 3 + 3:
@@ -45,7 +52,7 @@ class Pose:
         self.frame_data = copy.copy(frame_data)
         # get root data
         data_index = 0
-        self.transforms = [None for _ in range(tree.num_nodes())]
+        self.rotations = [None for _ in range(tree.num_nodes())]
         if tree.get_node_by_index(0) != tree.root:
             raise ValueError
         for i in range(tree.num_nodes()):
@@ -54,10 +61,10 @@ class Pose:
             values = frame_data[data_index : data_index + len(channels)]
             data_index += len(channels)
             parser = self._ChannelParser(channels, values)
-            translation, rotation = parser.parse()
-            if len(channels) == 3:
-                translation = Translation.from_vector(node.offset)
-            self.transforms[i] = Transform(translation, rotation)
+            rotation, root_trans = parser.parse()
+            self.rotations[i] = rotation
+            if root_trans:
+                self.root_translation = root_trans
 
 
 class Animation:

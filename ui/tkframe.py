@@ -22,18 +22,20 @@ class tkRenderFrame(OpenGLFrame):
         self.animation = animation
         self.animate = 1
         self.frame_now = 0
+        self.selected_joint = "None"
 
     def initgl(self):
         self.renderer.clear()
         self.renderer.render_perspective(self.cam)
 
     def redraw(self):
+        pose = self.animation.get_pose(self.frame_now)
         self.renderer.clear()
         self.renderer.render_perspective(self.cam)
         self.renderer.render_global_axis()
-        self.renderer.render_pose(
-            self.skeleton, self.animation.get_pose(self.frame_now), scale=0.01
-        )
+        self.renderer.render_pose(self.skeleton, pose)
+        if self.selected_joint != "None":
+            self.renderer.render_joint_pos(self.selected_joint, self.skeleton, pose)
         # self.renderer.render_pose() ## Get Pose idx
 
 
@@ -53,9 +55,9 @@ class tkUtilFrame(tkinter.Frame):
         for i in range(animation.skeleton.num_nodes()):
             node = animation.skeleton.get_node_by_index(i)
             option_list.append(node.get_name())
-        self.v = tkinter.StringVar()
-        self.v.set(option_list[0])
-        self.joint_option = tkinter.OptionMenu(self, self.v, *option_list)
+        self.selected_joint = tkinter.StringVar()
+        self.selected_joint.set(option_list[0])
+        self.joint_option = tkinter.OptionMenu(self, self.selected_joint, *option_list)
         self.joint_option.configure(width=70)
         self.play_button = tkinter.Button(
             self,

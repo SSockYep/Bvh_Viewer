@@ -1,3 +1,4 @@
+from unittest import result
 import numpy as np
 from copy import copy
 from data_structure.math import *
@@ -150,9 +151,9 @@ class Transform:
     def to_matrix(self):
         rot_mat = self.rotation.to_matrix()
         trans_mat = self.translation.to_matrix()
-
-        result_matrix = copy(rot_mat)
-        result_matrix[0, 3] = trans_mat[0, 3]
-        result_matrix[1, 3] = trans_mat[1, 3]
-        result_matrix[2, 3] = trans_mat[2, 3]
+        result_matrix = trans_mat @ rot_mat
+        # result_matrix = copy(rot_mat)
+        # result_matrix[0, 3] = trans_mat[0, 3]
+        # result_matrix[1, 3] = trans_mat[1, 3]
+        # result_matrix[2, 3] = trans_mat[2, 3]
         return result_matrix

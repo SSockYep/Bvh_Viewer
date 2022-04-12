@@ -35,4 +35,5 @@ class tkInterFrameController:
 
     def update_status(self):
         self.renderframe.frame_now = self.utilframe.aniframe_scroll.get()
+        self.renderframe.selected_joint = self.utilframe.selected_joint.get()
         self.renderframe.after(10, self.update_status)
