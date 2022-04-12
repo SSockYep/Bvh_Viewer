@@ -10,6 +10,7 @@ class Node:
         offset: Vector3 = Vector3(0, 0, 0),
         name: str = "",
         parent=None,
+        end=Vector3(),
     ):
         self.children = []
         self.offset = offset
@@ -20,6 +21,10 @@ class Node:
             self.parent = None
         self._name = name
         self.channels = []
+        self._is_leaf = False
+        if end != Vector3():
+            self._is_leaf = True
+        self.end = end
 
     def __hash__(self):
         hash_val = hash(self._name)
@@ -64,6 +69,9 @@ class Node:
 
     def is_root(self):
         return self.parent == None
+
+    def is_leaf(self):
+        return self._is_leaf
 
     def _depth_first_trav(self):
         ret = []

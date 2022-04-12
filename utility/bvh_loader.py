@@ -19,6 +19,7 @@ class BvhLoader:
             root = None
             node = None
             motion = []
+            leaf = False
             for line in lines:
                 if line[0].upper() == "HIERARCHY":
                     pass
@@ -30,22 +31,29 @@ class BvhLoader:
                     node = Node(name=line[1], parent=node_stack[-1])
                     node_list.append(node)
                 elif line[0] == "{":
-                    node_stack.append(node)
+                    if not leaf:
+                        node_stack.append(node)
                 elif line[0] == "}":
-                    node = node_stack.pop()
-                    if not node.is_root():
-                        node.set_parent(node_stack[-1])
+                    if not leaf:
+                        node = node_stack.pop()
+                        if not node.is_root():
+                            node.set_parent(node_stack[-1])
+                    else:
+                        leaf = False
                 elif line[0].upper() == "OFFSET":
                     offset = Vector3(float(line[1]), float(line[2]), float(line[3]))
-                    node_stack[-1].offset = offset
+                    if not leaf:
+                        node_stack[-1].offset = offset
+                    else:
+                        node.end = offset
                 elif line[0].upper() == "CHANNELS":
                     if int(line[1]) + 2 != len(line):
                         raise ValueError
                     channels = line[2 : int(line[1]) + 2]
                     node_stack[-1].channels = channels
                 elif line[0].upper() == "END":
-                    pass
-
+                    node._is_leaf = True
+                    leaf = True
                 elif line[0].upper() == "MOTION":
                     pass
                 elif line[0].upper() == "FRAMES:":

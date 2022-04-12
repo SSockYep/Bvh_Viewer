@@ -60,18 +60,21 @@ class Renderer:
             idx = skeleton.get_index_of_node(node)
             rotation = pose.rotations[idx]
             offset = node.offset
-            if node.is_root():
-                root_translation = pose.root_translation
-                glMultTransposeMatrixd(root_translation.to_matrix().to_numpy())
-            translation = Translation(node.offset)
-            # pdb.set_trace()
-            glMultTransposeMatrixf(rotation.to_matrix().to_numpy())
-            if not (node.is_root()):
-                start = Vector3(0, 0, 0)
-                end = offset
-                self.render_line(start, end)
-            glMultTransposeMatrixf(translation.to_matrix().to_numpy())
+            translation = Translation(offset)
             glPushMatrix()
+            if node.is_root():
+                root_origin = node.offset
+                root_translation = pose.root_translation
+                # glMultTransposeMatrixf(translation.to_matrix().to_numpy())
+                glMultTransposeMatrixf(root_translation.to_matrix().to_numpy())
+                glMultTransposeMatrixf(rotation.to_matrix().to_numpy())
+
+            else:
+                self.render_line(Vector3(0, 0, 0), offset)
+                glMultTransposeMatrixf(translation.to_matrix().to_numpy())
+                glMultTransposeMatrixf(rotation.to_matrix().to_numpy())
+            if node.is_leaf():
+                self.render_line(Vector3(0, 0, 0), node.end)
             for child in node.children:
                 dfs(child)
             glPopMatrix()
@@ -99,22 +102,27 @@ class Renderer:
         node = skeleton.get_node_by_name(node_name)
         idx = skeleton.get_index_of_node(node)
         while True:
+            if node.is_root():
+                mat = (
+                    pose.root_translation.to_matrix()
+                    # @ Translation(node.offset).to_matrix()
+                    @ pose.rotations[idx].to_matrix()
+                    @ mat
+                )
+                break
             mat = (
-                pose.rotations[idx].to_matrix()
-                @ Translation(node.offset).to_matrix()
+                Translation(node.offset).to_matrix()
+                @ pose.rotations[idx].to_matrix()
                 @ mat
             )
-            if node.is_root():
-                mat = pose.root_translation.to_matrix() @ mat
-                break
             node = node.parent
             idx = skeleton.get_index_of_node(node)
         pos = mat @ Vector3(0, 0, 0)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         glScale(scale, scale, scale)
-
-        glPointSize(5)
+        glPointSize(7)
+        glColor3ub(0, 255, 255)
         glBegin(GL_POINTS)
         glVertex(pos.x, pos.y, pos.z)
         glEnd()
