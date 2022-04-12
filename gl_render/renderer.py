@@ -1,3 +1,4 @@
+import pdb
 import numpy as np
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -35,6 +36,13 @@ class Renderer:
             0,
         )
 
+    def render_line(self, start, end):
+        glBegin(GL_LINES)
+        glColor3ub(255, 255, 255)
+        glVertex3fv(start.to_numpy())
+        glVertex3fv(end.to_numpy())
+        glEnd()
+
     def render_pose(self, skeleton, pose, scale=1.0):
         root = skeleton.root
 
@@ -48,13 +56,16 @@ class Renderer:
 
         def dfs(node):
             idx = skeleton.get_index_of_node(node)
-            matrix = pose.transforms[idx].to_matrix().to_numpy()
-            glMultTransposeMatrixf(matrix)
+            matrix = pose.transforms[idx].to_matrix()
+            mat_on_top = glGetFloatv(GL_MODELVIEW_MATRIX)
+            # pdb.set_trace()
+            if not (node.is_root()):
+                mat_parent = Matrix4x4(mat_on_top.T)
+                start = Vector3(0, 0, 0)
+                end = matrix @ Vector3(0, 0, 0)
+                self.render_line(start, end)
+            glMultTransposeMatrixf(matrix.to_numpy())
             glPushMatrix()
-            glBegin(GL_POINTS)
-            glVertex3f(0.0, 0.0, 0.0)
-            glEnd()
-
             for child in node.children:
                 dfs(child)
             glPopMatrix()
@@ -62,7 +73,7 @@ class Renderer:
         dfs(root)
         glPopMatrix()
 
-    def render_global_axis(self):  # sometimes x and z counterchange
+    def render_global_axis(self):
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         glBegin(GL_LINES)
