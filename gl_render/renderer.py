@@ -35,15 +35,6 @@ class Renderer:
             0,
         )
 
-    def render_line(self, start, end):
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        glBegin(GL_LINES)
-        glColor3ub(255, 255, 255)
-        glVertex3fv(start.to_numpy())
-        glVertex3fv(end.to_numpy())
-        glEnd()
-
     def render_pose(self, skeleton, pose, scale=1.0):
         root = skeleton.root
 
@@ -71,7 +62,7 @@ class Renderer:
         dfs(root)
         glPopMatrix()
 
-    def render_global_axis(self):
+    def render_global_axis(self):  # sometimes x and z counterchange
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         glBegin(GL_LINES)
