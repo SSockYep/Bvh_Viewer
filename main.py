@@ -1,5 +1,5 @@
 import numpy as np
-import glfw
+import tkinter
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -9,37 +9,23 @@ from gl_render.renderer import *
 from gl_render.camera import Camera
 from gl_render.callback import Callback
 from utility.bvh_loader import BvhLoader
+from ui.tkframe import tkRenderFrame, tkPlayFrame
 
 import pdb
 
 
 def main():
-    if not glfw.init():
-        return
-    window = glfw.create_window(680, 480, "test", None, None)
-    if not window:
-        glfw.terminate()
-        return
-
-    glfw.make_context_current(window)
-
     renderer = Renderer()
     cam = Camera()
-    animation = BvhLoader("test.bvh").parse()
-    callback = Callback(cam, window)
-    glfw.set_mouse_button_callback(window, callback.mouse_callback)
-    glfw.set_cursor_pos_callback(window, callback.cursor_callback)
-    i = 0
-    while not glfw.window_should_close(window):
-        glfw.poll_events()
-        renderer.clear()
-        renderer.render_perspective(cam)
-        renderer.render_global_axis()
-        renderer.render_pose(animation.get_pose(i), scale=0.01)
-        i = (i + 1) % animation.frame
-        glfw.wait_events_timeout(animation.frame_time)
-        glfw.swap_buffers(window)
-    glfw.terminate()
+    root = tkinter.Tk()
+    callback = Callback(cam, root)
+
+    root.grid()
+    glrender_frame = tkRenderFrame(renderer, cam, callback, root, width=800, height=600)
+    glrender_frame.grid(row=0)
+    playutil_frame = tkPlayFrame(100, root, width=800)
+    playutil_frame.grid(row=1, sticky=tkinter.EW)
+    root.mainloop()
 
 
 if __name__ == "__main__":

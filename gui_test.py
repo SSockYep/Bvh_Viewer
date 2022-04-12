@@ -60,16 +60,32 @@ def main():
     cam = Camera()
     root = tkinter.Tk()
     callback = Callback(cam, root)
-    root.bind("<Motion>", callback.cursor_move_callback)
-    root.bind("<ButtonPress-1>", callback.lclick_callback)
-    root.bind("<ButtonPress-2>", callback.mclick_callback)
-    root.bind("<ButtonPress-3>", callback.rclick_callback)
-    root.bind("<ButtonRelease>", callback.release_callback)
-    app = testframe(renderer, cam, root, width=800, height=600)
-    app.pack(fill=tkinter.BOTH, expand=tkinter.YES)
-    app.animate = 1
-    app.after(100, app.printContext)
-    app.mainloop()
+
+    glrender_frame = testframe(renderer, cam, root, width=800, height=600)
+    glrender_frame.bind("<Motion>", callback.cursor_move_callback)
+    glrender_frame.bind("<ButtonPress-1>", callback.lclick_callback)
+    glrender_frame.bind("<ButtonPress-2>", callback.mclick_callback)
+    glrender_frame.bind("<ButtonPress-3>", callback.rclick_callback)
+    glrender_frame.bind("<ButtonRelease>", callback.release_callback)
+    glrender_frame.grid(row=0)
+    playutil_frame = tkinter.Frame(root, width=800)
+    playutil_frame.grid(row=1, sticky=tkinter.EW)
+    play_button = tkinter.Button(master=playutil_frame, text="play")
+    print(play_button.master)
+    play_button.grid(row=0, column=0, padx=5, pady=5, sticky=tkinter.E)
+    pause_button = tkinter.Button(master=playutil_frame, text="pause")
+    playutil_frame.columnconfigure(0, weight=5)
+    pause_button.grid(row=0, column=1, padx=5, pady=5, sticky=tkinter.W)
+    playutil_frame.columnconfigure(1, weight=5)
+    anim_frame_slider = tkinter.Scale(
+        master=playutil_frame, to=100, orient=tkinter.HORIZONTAL
+    )
+    anim_frame_slider.grid(row=1, columnspan=2, sticky=tkinter.EW)
+    # playutil_frame.pack(fill=tkinter.X)
+
+    glrender_frame.animate = 1
+    glrender_frame.after(100, glrender_frame.printContext)
+    glrender_frame.mainloop()
 
 
 if __name__ == "__main__":
