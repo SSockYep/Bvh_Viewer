@@ -5,7 +5,7 @@ from OpenGL.GLU import *
 
 
 class Camera:
-    def __init__(self, pos=Vector3(0.0, 1.0, 5.0), lookat=Vector3(0.0, 0.0, 0.0)):
+    def __init__(self, pos=Vector3(5.0, 2.0, 5.0), lookat=Vector3(0.0, 0.0, 0.0)):
         self.pos = pos
         self.lookat = lookat
         self.angle = 45
