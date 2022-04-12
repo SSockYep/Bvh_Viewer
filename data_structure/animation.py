@@ -41,15 +41,15 @@ class Pose:
         if len(frame_data) != tree.num_nodes() * 3 + 3:
             raise ValueError
         # load index -> get translation and rotaition of frame data
-        self.bones = tree
+
         self.frame_data = copy.copy(frame_data)
         # get root data
         data_index = 0
-        self.transforms = [None for _ in range(self.bones.num_nodes())]
-        if self.bones.get_node_by_index(0) != self.bones.root:
+        self.transforms = [None for _ in range(tree.num_nodes())]
+        if tree.get_node_by_index(0) != tree.root:
             raise ValueError
-        for i in range(self.bones.num_nodes()):
-            node = self.bones.get_node_by_index(i)
+        for i in range(tree.num_nodes()):
+            node = tree.get_node_by_index(i)
             channels = node.channels
             values = frame_data[data_index : data_index + len(channels)]
             data_index += len(channels)
@@ -64,6 +64,7 @@ class Animation:
     def __init__(self, tree, frame, frame_time, motion):
         self.frame = frame
         self.frame_time = frame_time
+        self.skeleton = tree
         self.poses = []
         for v in motion:
             self.poses.append(Pose(tree, v))

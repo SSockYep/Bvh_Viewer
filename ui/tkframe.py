@@ -3,15 +3,18 @@ from pyopengltk import OpenGLFrame
 
 
 class tkRenderFrame(OpenGLFrame):
-    def __init__(self, renderer, cam, callback, master, *args, **kwargs):
+    def __init__(self, renderer, cam, callback, animation, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.renderer = renderer
         self.cam = cam
-        master.bind("<Motion>", callback.cursor_move_callback)
-        master.bind("<ButtonPress-1>", callback.lclick_callback)
-        master.bind("<ButtonPress-2>", callback.mclick_callback)
-        master.bind("<ButtonPress-3>", callback.rclick_callback)
-        master.bind("<ButtonRelease>", callback.release_callback)
+        self.bind("<Motion>", callback.cursor_move_callback)
+        self.bind("<ButtonPress-1>", callback.lclick_callback)
+        self.bind("<ButtonPress-2>", callback.mclick_callback)
+        self.bind("<ButtonPress-3>", callback.rclick_callback)
+        self.bind("<ButtonRelease>", callback.release_callback)
+        self.skeleton = animation.skeleton
+        self.animation = animation
+        self.animate = 1
 
     def initgl(self):
         self.renderer.clear()
@@ -21,6 +24,7 @@ class tkRenderFrame(OpenGLFrame):
         self.renderer.clear()
         self.renderer.render_perspective(self.cam)
         self.renderer.render_global_axis()
+        self.renderer.render_pose(self.skeleton, self.animation.get_pose(0), scale=0.01)
         # self.renderer.render_pose() ## Get Pose idx
 
 

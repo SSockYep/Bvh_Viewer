@@ -44,9 +44,8 @@ class Renderer:
         glVertex3fv(end.to_numpy())
         glEnd()
 
-    def render_pose(self, pose, scale=1.0):
-        root = pose.bones.root
-        skeleton = pose.bones
+    def render_pose(self, skeleton, pose, scale=1.0):
+        root = skeleton.root
 
         glPointSize(5)
         glColor3ub(255, 255, 255)
