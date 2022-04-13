@@ -66,8 +66,8 @@ class Renderer:
             if node.is_root():
                 root_origin = node.offset
                 root_translation = pose.root_translation
-                # glMultTransposeMatrixf(translation.to_matrix().to_numpy())
                 glMultTransposeMatrixf(root_translation.to_matrix().to_numpy())
+                # glMultTransposeMatrixf(translation.to_matrix().to_numpy())
                 glMultTransposeMatrixf(rotation.to_matrix().to_numpy())
 
             else:
@@ -112,7 +112,7 @@ class Renderer:
         glEnd()
 
     def render_joint_velocity(
-        self, node_name, skeleton, animation, pose_idx, scale=0.01
+        self, node_name, skeleton, animation, pose_idx, scale=0.01, vel_scale=0.5
     ):
         if pose_idx <= 0 or pose_idx >= len(animation.poses):
             raise ValueError
@@ -123,7 +123,7 @@ class Renderer:
         position_prev = self._get_node_global_position(skeleton, node, pose_prev)
 
         velocity = position_now + (
-            (position_now - position_prev) / animation.frame_time
+            (position_now - position_prev) / animation.frame_time * vel_scale
         )
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
@@ -141,7 +141,7 @@ class Renderer:
             if node.is_root():
                 mat = (
                     pose.root_translation.to_matrix()
-                    # @ Translation(node.offset).to_matrix()
+                    # Translation(node.offset).to_matrix()
                     @ pose.rotations[idx].to_matrix()
                     @ mat
                 )

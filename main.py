@@ -20,7 +20,7 @@ def main():
     cam = Camera()
     root = tkinter.Tk()
     callback = Callback(cam, root)
-    loader = BvhLoader("test.bvh")
+    loader = BvhLoader("jump.bvh")
 
     animation = loader.parse()
     root.grid()
