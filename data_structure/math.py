@@ -110,6 +110,9 @@ class Quaternion:
             self.w * other, self.x * other, self.y * other, self.z * other
         )
 
+    def __neg__(self):
+        return Quaternion(-self.w, -self.x, -self.y, -self.z)
+
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)
 

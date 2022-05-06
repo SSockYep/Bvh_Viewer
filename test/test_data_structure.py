@@ -108,6 +108,9 @@ class TestQuaternion:
         vec = Vector3(1, 2, 3)
         assert vec.to_numpy(np.uint32).dtype == np.uint32
 
+    def test_neg(self):
+        assert -Quaternion(1, 0, 0, 0) == Quaternion(-1, 0, 0, 0)
+
 
 class TestMatrix4x4:
     def test_matrix_init(self):
