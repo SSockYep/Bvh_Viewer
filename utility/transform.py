@@ -8,6 +8,11 @@ class Translation:
     def __init__(self, v: Vector3 = Vector3()):
         self.vec = copy(v)
 
+    def __eq__(self, other):
+        if not isinstance(other, Translation):
+            raise TypeError
+        return self.vec == other.vec
+
     @classmethod
     def from_vector(cls, v: Vector3):
         return cls(v)
@@ -31,9 +36,11 @@ class Rotation:
         self.quaternion = copy(q)
 
     def __eq__(self, other):
-        if isinstance(other, Rotation):
-            return self.quaternion == other.quaternion
-        return False
+        if not isinstance(other, Rotation):
+            raise TypeError
+        return (
+            self.quaternion == other.quaternion or self.quaternion == -other.quaternion
+        )
 
     @classmethod
     def from_quaternion(cls, q: Quaternion):

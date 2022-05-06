@@ -16,7 +16,7 @@ class Pose:
 
     def __eq__(self, other):
         if not isinstance(other, Pose):
-            raise ValueError
+            raise TypeError
         if self.root_translation != other.root_translation:
             return False
         for i in range(len(self.rotations)):
