@@ -11,8 +11,18 @@ class Pose:
     def __init__(self, tree: BvhTree, rotations: list, root_translation: Translation):
         if tree.num_nodes != len(rotations):
             assert ValueError
-        self.root_translation = copy.deepcopy(rotations)
-        self.rotations = Translation(root_translation.to_vector())
+        self.root_translation = Translation(root_translation.to_vector())
+        self.rotations = copy.deepcopy(rotations)
+
+    def __eq__(self, other):
+        if not isinstance(other, Pose):
+            raise ValueError
+        if self.root_translation != other.root_translation:
+            return False
+        for i in range(len(self.rotations)):
+            if self.rotations[i] != other.rotations[i]:
+                return False
+        return True
 
     class _ChannelParser:
         def __init__(self, channels, values):

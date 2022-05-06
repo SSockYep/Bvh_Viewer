@@ -23,6 +23,9 @@ class TestTranslation:
         mat[:, 3] = [1, 2, 3, 1]
         assert Translation(Vector3(1, 2, 3)).to_matrix() == Matrix4x4(mat)
 
+    def test_eq(self):
+        assert Translation(Vector3(1, 2, 3)) == Translation(Vector3(1, 2, 3))
+
 
 class TestRotation:
     def test_equality(self):
@@ -67,6 +70,9 @@ class TestRotation:
         point = Vector3(0, 0, 1)
         rotation = Rotation.from_euler("xyz", 0, np.pi, 0)
         assert rotation.rotate(point) == Vector3(0, 0, -1)
+
+    def test_eq(self):
+        assert Rotation(Quaternion(1, 0, 0, 0)) == Rotation(Quaternion(1, 0, 0, 0))
 
 
 class TestTransform:

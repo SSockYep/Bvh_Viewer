@@ -22,7 +22,7 @@ def main():
     callback = Callback(cam, root)
     loader = BvhLoader("01_01.bvh")
 
-    animation = loader.parse()
+    animation = loader.load()
     root.grid()
     root.columnconfigure(0, weight=1)
     root.columnconfigure(1, weight=1)
