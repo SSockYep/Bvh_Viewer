@@ -1,9 +1,7 @@
 from re import S
 import tkinter
-from turtle import color
-from click import option
+import numpy as np
 from pyopengltk import OpenGLFrame
-from pytest import skip
 
 from ui.tkutil import tkScrollController
 
@@ -35,14 +33,15 @@ class tkRenderFrame(OpenGLFrame):
         self.renderer.render_global_axis()
         self.renderer.render_pose(self.skeleton, pose)
         if self.selected_joint != "None":
-            self.renderer.render_joint_pos(self.selected_joint, self.skeleton, pose)
+            joint_pos = self.animation.get_joint_pos_on_frame(
+                self.selected_joint, self.frame_now
+            )
+            self.renderer.render_point(joint_pos)
             if self.frame_now > 0:
-                self.renderer.render_joint_velocity(
-                    self.selected_joint,
-                    self.skeleton,
-                    self.animation,
-                    self.frame_now,
+                pos, vel = self.animation.get_joint_velocity(
+                    self.selected_joint, self.frame_now
                 )
+                self.renderer.render_line(pos, vel, np.array([255, 255, 0], np.ubyte))
         # self.renderer.render_pose() ## Get Pose idx
 
 

@@ -16,11 +16,11 @@ import pdb
 
 
 def main():
-    renderer = Renderer()
+    renderer = Renderer(scale=0.05)
     cam = Camera()
     root = tkinter.Tk()
     callback = Callback(cam, root)
-    loader = BvhLoader("jump.bvh")
+    loader = BvhLoader("01_01.bvh")
 
     animation = loader.parse()
     root.grid()

@@ -195,7 +195,18 @@ class TestPose:
         node2 = Node()
         node1.set_parent(root)
         node2.set_parent(root)
-        assert Pose(root)
+        tree = BvhTree(root)
+        rotations = [(Rotation.from_quaternion(Quaternion())) for _ in range(3)]
+        assert Pose(tree, rotations, Translation(Vector3(1, 1, 1)))
+
+    def test_equal(self):
+        node1 = Node()
+        node2 = Node()
+        rotations = [Rotation(Quaternion) for _ in range(2)]
+        translation = Translation(Vector3)
+        assert Pose(BvhTree(node1), rotations, translation) == Pose(
+            BvhTree(node2), rotations, translation
+        )
 
 
 class TestNode:

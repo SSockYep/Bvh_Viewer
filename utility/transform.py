@@ -77,7 +77,7 @@ class Rotation:
 
     @classmethod
     def from_euler(cls, seq: str = "xyz", *angles):
-        if len(seq) != 3 or len(angles[0]) != 3:
+        if len(seq) != 3 or len(angles) != 3:
             raise ValueError
         if seq[0] == seq[1] or seq[1] == seq[2]:
             raise ValueError
@@ -100,7 +100,7 @@ class Rotation:
 
         q = []
         for i in range(3):
-            q.append(rotate(seq[i], angles[0][i]))
+            q.append(rotate(seq[i], angles[i]))
         return cls(q[2] * q[1] * q[0])
 
     def to_quaternion(self):

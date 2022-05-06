@@ -14,14 +14,15 @@ from .camera import Camera
 
 
 class Renderer:
-    def __init__(self):
-        pass
+    def __init__(self, scale=0.01):
+        self.scale = scale
 
     def clear(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glEnable(GL_DEPTH_TEST)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         glLoadIdentity()
+        glScalef(self.scale, self.scale, self.scale)
 
     def render_perspective(self, cam):
         glMatrixMode(GL_PROJECTION)
@@ -39,22 +40,20 @@ class Renderer:
             0,
         )
 
-    def render_line(self, start, end):
+    def render_line(self, start, end, color):
         glBegin(GL_LINES)
-        glColor3ub(255, 255, 255)
+        glColor3ubv(color)
         glVertex3fv(start.to_numpy())
         glVertex3fv(end.to_numpy())
         glEnd()
 
-    def render_pose(self, skeleton, pose, scale=0.01):
+    def render_pose(self, skeleton, pose):
         root = skeleton.root
 
         glPointSize(5)
         glColor3ub(255, 255, 255)
 
         glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        glScalef(scale, scale, scale)
         glPushMatrix()
 
         def dfs(node):
@@ -71,11 +70,17 @@ class Renderer:
                 glMultTransposeMatrixf(rotation.to_matrix().to_numpy())
 
             else:
-                self.render_line(Vector3(0, 0, 0), offset)
+                self.render_line(
+                    Vector3(0, 0, 0), offset, np.array([255, 255, 255], dtype=np.ubyte)
+                )
                 glMultTransposeMatrixf(translation.to_matrix().to_numpy())
                 glMultTransposeMatrixf(rotation.to_matrix().to_numpy())
             if node.is_leaf():
-                self.render_line(Vector3(0, 0, 0), node.end)
+                self.render_line(
+                    Vector3(0, 0, 0),
+                    node.end,
+                    np.array([255, 255, 255], dtype=np.ubyte),
+                )
             for child in node.children:
                 dfs(child)
             glPopMatrix()
@@ -88,70 +93,34 @@ class Renderer:
         glLoadIdentity()
         glBegin(GL_LINES)
         glColor3ub(255, 0, 0)
-        glVertex3fv(np.array([0.0, 0.0, 0.0]))
-        glVertex3fv(np.array([1.0, 0.0, 0.0]))
+        glVertex3f(0.0, 0.0, 0.0)
+        glVertex3f(1.0, 0.0, 0.0)
         glColor3ub(0, 255, 0)
-        glVertex3fv(np.array([0.0, 0.0, 0.0]))
-        glVertex3fv(np.array([0.0, 1.0, 0.0]))
+        glVertex3f(0.0, 0.0, 0.0)
+        glVertex3f(0.0, 1.0, 0.0)
         glColor3ub(0, 0, 255)
-        glVertex3fv(np.array([0.0, 0.0, 0.0]))
-        glVertex3fv(np.array([0.0, 0.0, 1.0]))
+        glVertex3f(0.0, 0.0, 0.0)
+        glVertex3f(0.0, 0.0, 1.0)
         glEnd()
 
-    def render_joint_pos(self, node_name, skeleton, pose, scale=0.01):
-        node = skeleton.get_node_by_name(node_name)
-        pos = self._get_node_global_position(skeleton, node, pose)
+        for i in range(-20, 20):
+            for j in range(-20, 20):
+                glBegin(GL_QUADS)
+                if (i + j) % 2 == 0:
+                    glColor3ub(30, 30, 30)
+                else:
+                    glColor3ub(120, 120, 120)
+                glVertex3f(i * 0.2, 0, j * 0.2)
+                glVertex3f((i + 1) * 0.2, 0, j * 0.2)
+                glVertex3f((i + 1) * 0.2, 0, (j + 1) * 0.2)
+                glVertex3f(i * 0.2, 0, (j + 1) * 0.2)
+                glEnd()
+        glScalef(self.scale, self.scale, self.scale)
 
+    def render_point(self, pos):
         glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        glScale(scale, scale, scale)
         glPointSize(7)
         glColor3ub(0, 255, 255)
         glBegin(GL_POINTS)
         glVertex(pos.x, pos.y, pos.z)
         glEnd()
-
-    def render_joint_velocity(
-        self, node_name, skeleton, animation, pose_idx, scale=0.01, vel_scale=0.5
-    ):
-        if pose_idx <= 0 or pose_idx >= len(animation.poses):
-            raise ValueError
-        node = skeleton.get_node_by_name(node_name)
-        pose_now = animation.get_pose(pose_idx)
-        pose_prev = animation.get_pose(pose_idx - 1)
-        position_now = self._get_node_global_position(skeleton, node, pose_now)
-        position_prev = self._get_node_global_position(skeleton, node, pose_prev)
-
-        velocity = position_now + (
-            (position_now - position_prev) / animation.frame_time * vel_scale
-        )
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        glScale(scale, scale, scale)
-        glColor3ub(255, 255, 0)
-        glBegin(GL_LINES)
-        glVertex(position_now.x, position_now.y, position_now.z)
-        glVertex(velocity.x, velocity.y, velocity.z)
-        glEnd()
-
-    def _get_node_global_position(self, skeleton, node, pose):
-        mat = Matrix4x4(np.eye(4, 4))
-        idx = skeleton.get_index_of_node(node)
-        while True:
-            if node.is_root():
-                mat = (
-                    pose.root_translation.to_matrix()
-                    # Translation(node.offset).to_matrix()
-                    @ pose.rotations[idx].to_matrix()
-                    @ mat
-                )
-                break
-            mat = (
-                Translation(node.offset).to_matrix()
-                @ pose.rotations[idx].to_matrix()
-                @ mat
-            )
-            node = node.parent
-            idx = skeleton.get_index_of_node(node)
-        pos = mat @ Vector3(0, 0, 0)
-        return pos

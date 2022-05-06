@@ -1,6 +1,5 @@
 import pytest
 import numpy as np
-from sympy import Matrix
 from utility.bvh_loader import BvhLoader
 from utility.transform import Rotation, Transform, Translation
 from data_structure.bvh_tree import Node
@@ -85,5 +84,5 @@ class TestTransform:
 
 class TestLoader:
     def test_init(self):
-        parser = BvhLoader(filename="test.bvh")
-        assert parser.filename == "test.bvh"
+        loader = BvhLoader(filename="test.bvh")
+        assert loader.filename == "test.bvh"
