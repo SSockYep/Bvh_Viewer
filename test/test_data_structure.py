@@ -239,6 +239,18 @@ class TestPose:
             "xyz", np.pi, 0, 0
         )
 
+    def test_mult(self):
+        pose = Pose(
+            BvhTree(Node()),
+            [Rotation.from_euler("xyz", np.pi, 0, 0) for _ in range(2)],
+            Translation(Vector3()),
+        )
+        assert pose * 0.5 == Pose(
+            BvhTree(Node()),
+            [Rotation.from_euler("xyz", np.pi / 2, 0, 0) for _ in range(2)],
+            Translation(Vector3()),
+        )
+
 
 class TestNode:
     def test_node_initialize(self):
