@@ -47,12 +47,10 @@ class Renderer:
         glVertex3fv(end.to_numpy())
         glEnd()
 
-    def render_pose(self, skeleton, pose):
+    def render_pose(
+        self, skeleton, pose, color=np.array([255, 255, 255], dtype=np.ubyte)
+    ):
         root = skeleton.root
-
-        glPointSize(5)
-        glColor3ub(255, 255, 255)
-
         glMatrixMode(GL_MODELVIEW)
         glPushMatrix()
 
@@ -70,17 +68,11 @@ class Renderer:
                 glMultTransposeMatrixf(rotation.to_matrix().to_numpy())
 
             else:
-                self.render_line(
-                    Vector3(0, 0, 0), offset, np.array([255, 255, 255], dtype=np.ubyte)
-                )
+                self.render_line(Vector3(0, 0, 0), offset, color)
                 glMultTransposeMatrixf(translation.to_matrix().to_numpy())
                 glMultTransposeMatrixf(rotation.to_matrix().to_numpy())
             if node.is_leaf():
-                self.render_line(
-                    Vector3(0, 0, 0),
-                    node.end,
-                    np.array([255, 255, 255], dtype=np.ubyte),
-                )
+                self.render_line(Vector3(0, 0, 0), node.end, color)
             for child in node.children:
                 dfs(child)
             glPopMatrix()

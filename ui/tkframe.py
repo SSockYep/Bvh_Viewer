@@ -1,4 +1,3 @@
-from re import S
 import tkinter
 import numpy as np
 from pyopengltk import OpenGLFrame
@@ -7,7 +6,9 @@ from ui.tkutil import tkScrollController
 
 
 class tkRenderFrame(OpenGLFrame):
-    def __init__(self, renderer, cam, callback, animation, master, *args, **kwargs):
+    def __init__(
+        self, renderer, cam, callback, animation, master, pose=None, *args, **kwargs
+    ):
         super().__init__(master, *args, **kwargs)
         self.renderer = renderer
         self.cam = cam
@@ -21,6 +22,7 @@ class tkRenderFrame(OpenGLFrame):
         self.animate = 1
         self.frame_now = 0
         self.selected_joint = "None"
+        self.pose = pose
 
     def initgl(self):
         self.renderer.clear()
@@ -32,6 +34,10 @@ class tkRenderFrame(OpenGLFrame):
         self.renderer.render_perspective(self.cam)
         self.renderer.render_global_axis()
         self.renderer.render_pose(self.skeleton, pose)
+        if self.pose:
+            self.renderer.render_pose(
+                self.skeleton, self.pose, color=np.array([255, 0, 255], dtype=np.ubyte)
+            )
         if self.selected_joint != "None":
             joint_pos = self.animation.get_joint_pos_on_frame(
                 self.selected_joint, self.frame_now

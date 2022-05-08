@@ -13,6 +13,20 @@ class Translation:
             raise TypeError
         return self.vec == other.vec
 
+    def __add__(self, other):
+        if isinstance(other, Vector3):
+            return Translation.from_vector(self.vec + other)
+        if isinstance(other, Translation):
+            return Translation.from_vector(self.vec + other.vec)
+        raise TypeError
+
+    def __sub__(self, other):
+        if isinstance(other, Vector3):
+            return Translation.from_vector(self.vec - other)
+        if isinstance(other, Translation):
+            return Translation.from_vector(self.vec - other.vec)
+        raise TypeError
+
     @classmethod
     def from_vector(cls, v: Vector3):
         return cls(v)

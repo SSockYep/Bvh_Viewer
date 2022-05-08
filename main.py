@@ -12,7 +12,10 @@ from ui.tkutil import tkInterFrameController
 from utility.bvh_loader import BvhLoader
 from ui.tkframe import tkRenderFrame, tkUtilFrame
 
+import copy
 import pdb
+
+from utility.transition_functions import easeInOutCos
 
 
 def main():
@@ -21,13 +24,22 @@ def main():
     root = tkinter.Tk()
     callback = Callback(cam, root)
     loader = BvhLoader("01_01.bvh")
-
+    pose = None
+    # pose = BvhLoader("01_02.bvh").load().poses[4]
+    # pose.root_translation = pose.root_translation + Vector3(15, 0, 0)
     animation = loader.load()
+    pose = copy.deepcopy(animation.poses[1695])
+    pose.rotations[18] = Rotation.from_quaternion(Quaternion(1, 0, 0, 0))
+    if pose:
+        animation = animation.warp(
+            pose=pose, frame=1695, time=30, trans_func=easeInOutCos
+        )
+
     root.grid()
     root.columnconfigure(0, weight=1)
     root.columnconfigure(1, weight=1)
     glrender_frame = tkRenderFrame(
-        renderer, cam, callback, animation, root, width=800, height=600
+        renderer, cam, callback, animation, root, width=800, height=600, pose=pose
     )
     glrender_frame.grid(row=0, pady=5)
 
