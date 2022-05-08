@@ -13,6 +13,11 @@ class Translation:
             raise TypeError
         return self.vec == other.vec
 
+    def __ne__(self, other):
+        if self.__eq__(other):
+            return False
+        return True
+
     def __add__(self, other):
         if isinstance(other, Vector3):
             return Translation.from_vector(self.vec + other)
@@ -26,6 +31,11 @@ class Translation:
         if isinstance(other, Translation):
             return Translation.from_vector(self.vec - other.vec)
         raise TypeError
+
+    def __mul__(self, other):
+        if not isinstance(other, float):
+            raise TypeError
+        return Translation.from_vector(self.vec * other)
 
     @classmethod
     def from_vector(cls, v: Vector3):
@@ -56,6 +66,11 @@ class Rotation:
             self.quaternion == other.quaternion or self.quaternion == -other.quaternion
         )
 
+    def __ne__(self, other):
+        if self.__eq__(other):
+            return False
+        return True
+
     def __add__(self, other):
         if isinstance(other, Quaternion):
             return Rotation.from_quaternion(self.quaternion * other)
@@ -71,6 +86,25 @@ class Rotation:
                 self.quaternion * other.quaternion.conjugate()
             )
         raise TypeError
+
+    def __mul__(self, other):
+        if not isinstance(other, float):
+            raise TypeError
+        old_theta = np.arccos(self.quaternion.w) * 2
+
+        rot_axis = Vector3(
+            self.quaternion.x, self.quaternion.y, self.quaternion.z
+        ) / np.sin(old_theta / 2)
+        new_theta = old_theta * other
+        sin_theta = np.sin(new_theta / 2)
+        return Rotation.from_quaternion(
+            Quaternion(
+                np.cos(new_theta / 2),
+                rot_axis.x * sin_theta,
+                rot_axis.y * sin_theta,
+                rot_axis.z * sin_theta,
+            )
+        )
 
     @classmethod
     def from_quaternion(cls, q: Quaternion):

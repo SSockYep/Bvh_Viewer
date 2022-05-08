@@ -49,8 +49,18 @@ class Pose:
         root_translation = self.root_translation + other.root_translation
         return Pose(self.tree, new_rotations, root_translation)
 
+    def __mul__(self, other):
+        if not isinstance(other, float):
+            print(type(other))
+            raise TypeError
+        new_rotations = []
+        for i in range(len(self.rotations)):
+            new_rotations.append(self.rotations[i] * other)
+        new_root_translation = self.root_translation * other
+        return Pose(self.tree, new_rotations, new_root_translation)
+
     def __div__(self, other):
-        if not type(other) != float:
+        if not isinstance(other, float):
             raise TypeError
         new_rotations = []
         for i in range(len(self.rotations)):

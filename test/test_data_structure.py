@@ -226,12 +226,10 @@ class TestPose:
         )
 
     def test_sub(self):
-        pose1 = Pose(
-            BvhTree(Node()), [Rotation() for _ in range(2)], Translation(Vector3())
-        )
+        pose1 = Pose(BvhTree(Node()), [Rotation()], Translation(Vector3()))
         pose2 = Pose(
             BvhTree(Node()),
-            [Rotation.from_euler("xyz", np.pi, 0, 0) for _ in range(2)],
+            [Rotation.from_euler("xyz", np.pi, 0, 0)],
             Translation(Vector3()),
         )
         added = pose1 - pose2
@@ -242,14 +240,19 @@ class TestPose:
     def test_mult(self):
         pose = Pose(
             BvhTree(Node()),
-            [Rotation.from_euler("xyz", np.pi, 0, 0) for _ in range(2)],
+            [Rotation.from_euler("xyz", np.pi, 0, 0)],
             Translation(Vector3()),
         )
-        assert pose * 0.5 == Pose(
+        res = Pose(
             BvhTree(Node()),
-            [Rotation.from_euler("xyz", np.pi / 2, 0, 0) for _ in range(2)],
+            [Rotation.from_euler("xyz", np.pi / 2, 0, 0)],
             Translation(Vector3()),
         )
+        print(pose.rotations[0].quaternion)
+        pose2 = pose * 0.5
+        print(pose2.rotations[0].quaternion)
+        print(res.rotations[0].quaternion)
+        assert pose * 0.5 == res
 
 
 class TestNode:
