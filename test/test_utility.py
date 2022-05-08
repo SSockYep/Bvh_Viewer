@@ -72,7 +72,7 @@ class TestRotation:
         assert rotation.rotate(point) == Vector3(0, 0, -1)
 
     def test_eq(self):
-        assert Rotation(Quaternion(1, 0, 0, 0)) == Rotation(Quaternion(1, 0, 0, 0))
+        assert Rotation(Quaternion(1, 0, 0, 0)) == Rotation(Quaternion(-1, 0, 0, 0))
 
 
 class TestTransform:

@@ -205,10 +205,38 @@ class TestPose:
     def test_equal(self):
         node1 = Node()
         node2 = Node()
-        rotations = [Rotation(Quaternion) for _ in range(2)]
-        translation = Translation(Vector3)
+        rotations = [Rotation(Quaternion()) for _ in range(2)]
+        translation = Translation(Vector3())
         assert Pose(BvhTree(node1), rotations, translation) == Pose(
             BvhTree(node2), rotations, translation
+        )
+
+    def test_add(self):
+        pose1 = Pose(
+            BvhTree(Node()), [Rotation() for _ in range(2)], Translation(Vector3())
+        )
+        pose2 = Pose(
+            BvhTree(Node()),
+            [Rotation.from_euler("xyz", np.pi, 0, 0) for _ in range(2)],
+            Translation(Vector3()),
+        )
+        added = pose1 + pose2
+        assert added.rotations[0] == Rotation() + Rotation.from_euler(
+            "xyz", np.pi, 0, 0
+        )
+
+    def test_sub(self):
+        pose1 = Pose(
+            BvhTree(Node()), [Rotation() for _ in range(2)], Translation(Vector3())
+        )
+        pose2 = Pose(
+            BvhTree(Node()),
+            [Rotation.from_euler("xyz", np.pi, 0, 0) for _ in range(2)],
+            Translation(Vector3()),
+        )
+        added = pose1 - pose2
+        assert added.rotations[0] == Rotation() - Rotation.from_euler(
+            "xyz", np.pi, 0, 0
         )
 
 
