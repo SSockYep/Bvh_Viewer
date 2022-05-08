@@ -6,11 +6,14 @@ from utility.transform import Transform, Translation
 from .math import *
 from data_structure.bvh_tree import *
 
+import pdb
+
 
 class Pose:
     def __init__(self, tree: BvhTree, rotations: list, root_translation: Translation):
         if tree.num_nodes != len(rotations):
             assert ValueError
+        self.tree = tree
         self.root_translation = Translation(root_translation.to_vector())
         self.rotations = copy.deepcopy(rotations)
 
@@ -23,6 +26,34 @@ class Pose:
             if self.rotations[i] != other.rotations[i]:
                 return False
         return True
+
+    def __add__(self, other):
+        if not isinstance(other, Pose):
+            raise TypeError
+        if len(self.rotations) != len(other.rotations):
+            raise ValueError
+        new_rotations = []
+        for i in range(len(self.rotations)):
+            new_rotations.append(self.rotations[i] + other.rotations[i])
+        return Pose(self.tree, new_rotations, self.root_translation)
+
+    def __sub__(self, other):
+        if not isinstance(other, Pose):
+            raise TypeError
+        if len(self.rotations) != len(other.rotations):
+            raise ValueError
+        new_rotations = []
+        for i in range(len(self.rotations)):
+            new_rotations.append(self.rotations[i] - other.rotations[i])
+        return Pose(self.tree, new_rotations, self.root_translation)
+
+    def __div__(self, other):
+        if not type(other) != float:
+            raise TypeError
+        new_rotations = []
+        for i in range(len(self.rotations)):
+            new_rotations.append(self.rotations[i] / other)
+        return Pose(self.tree, new_rotations, self.root_translation)
 
     class _ChannelParser:
         def __init__(self, channels, values):
@@ -57,9 +88,12 @@ class Pose:
                 root_trans = Translation.from_vector(pos)
             else:
                 root_trans = None
-            rot = Rotation.from_euler(rot_seq, rot_angles)
+            rot = Rotation.from_euler(
+                rot_seq, rot_angles[0], rot_angles[1], rot_angles[2]
+            )
             return rot, root_trans
 
+    @classmethod
     def from_bvh_data(cls, tree: BvhTree, frame_data: list):
         if len(frame_data) != tree.num_nodes() * 3 + 3:
             raise ValueError
@@ -81,7 +115,7 @@ class Pose:
             rotations[i] = rotation
             if root_trans:
                 root_translation = root_trans
-        return cls(rotations, root_translation)
+        return cls(tree, rotations, root_translation)
 
 
 class Animation:
@@ -91,11 +125,12 @@ class Animation:
         self.frame_time = frametime
         self.poses = copy.deepcopy(poses)
 
+    @classmethod
     def from_bvh_data(cls, tree, frame, frame_time, motion):
         poses = []
         for v in motion:
             poses.append(Pose.from_bvh_data(tree, v))
-        return cls(tree, frame, frame_time, motion)
+        return cls(tree, frame, frame_time, poses)
 
     def get_pose(self, frame):
         return self.poses[frame]

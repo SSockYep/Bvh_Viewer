@@ -42,6 +42,22 @@ class Rotation:
             self.quaternion == other.quaternion or self.quaternion == -other.quaternion
         )
 
+    def __add__(self, other):
+        if isinstance(other, Quaternion):
+            return Rotation.from_quaternion(self.quaternion * other)
+        if isinstance(other, Rotation):
+            return Rotation.from_quaternion(self.quaternion * other.quaternion)
+        raise TypeError
+
+    def __sub__(self, other):
+        if isinstance(other, Quaternion):
+            return Rotation.from_quaternion(self.quaternion * other.conjugate())
+        if isinstance(other, Rotation):
+            return Rotation.from_quaternion(
+                self.quaternion * other.quaternion.conjugate()
+            )
+        raise TypeError
+
     @classmethod
     def from_quaternion(cls, q: Quaternion):
         return cls(q)
@@ -164,3 +180,8 @@ class Transform:
         # result_matrix[1, 3] = trans_mat[1, 3]
         # result_matrix[2, 3] = trans_mat[2, 3]
         return result_matrix
+
+    def from_matrix(cls, matrix):
+        t = Translation.from_matrix(matrix)
+        r = Rotation.from_matrix(matrix)
+        return cls(t, r)

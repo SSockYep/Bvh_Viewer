@@ -116,6 +116,5 @@ class BvhTree:
         print(self.root.get_hier())
 
     def num_nodes(self):
-        print(self._node_list)
         return len(self._node_list)
 

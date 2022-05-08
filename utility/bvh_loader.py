@@ -1,9 +1,9 @@
-from multiprocessing.sharedctypes import Value
 from data_structure.animation import Animation
 from data_structure.math import *
 from data_structure.bvh_tree import Node, BvhTree
 from .transform import Rotation, Translation, Transform
 import copy
+import pdb
 
 
 class BvhLoader:
