@@ -46,7 +46,7 @@ class Pose:
         new_rotations = []
         for i in range(len(self.rotations)):
             new_rotations.append(self.rotations[i] - other.rotations[i])
-        root_translation = self.root_translation + other.root_translation
+        root_translation = self.root_translation - other.root_translation
         return Pose(self.tree, new_rotations, root_translation)
 
     def __mul__(self, other):
@@ -171,12 +171,14 @@ class Animation:
         new_poses = copy.deepcopy(self.poses)
         start_frame = frame - int(np.ceil(time / 2))
         # end_frame = frame + int(np.floor(time / 2))
-        delta = pose - new_poses[frame]
+        delta = new_poses[frame] - pose
         for i in range(int(np.ceil(time / 2))):
-            new_poses[start_frame + i] + delta * trans_func(i / int(np.ceil(time / 2)))
+            new_poses[start_frame + i] += delta * (
+                1 - trans_func(i / int(np.ceil(time / 2)))
+            )
         for i in range(int(np.floor(time / 2)) + 1):
-            new_poses[frame + i] + delta * trans_func(i / int(np.floor(time / 2)))
-        return Animation(self.tree, self.frame, self.frame_time, new_poses)
+            new_poses[frame + i] += delta * trans_func(i / int(np.floor(time / 2)))
+        return Animation(self.skeleton, self.frame, self.frame_time, new_poses)
 
     def _get_node_global_position(self, node, pose):
         mat = Matrix4x4(np.eye(4, 4))

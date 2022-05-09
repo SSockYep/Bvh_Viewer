@@ -30,10 +30,8 @@ def main():
     animation = loader.load()
     pose = copy.deepcopy(animation.poses[1695])
     pose.rotations[18] = Rotation.from_quaternion(Quaternion(1, 0, 0, 0))
-    if pose:
-        animation = animation.warp(
-            pose=pose, frame=1695, time=30, trans_func=easeInOutCos
-        )
+
+    animation = animation.warp(pose=pose, frame=1695, time=30, trans_func=easeInOutCos)
 
     root.grid()
     root.columnconfigure(0, weight=1)

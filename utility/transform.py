@@ -1,3 +1,4 @@
+import pdb
 from unittest import result
 import numpy as np
 from copy import copy
@@ -80,21 +81,26 @@ class Rotation:
 
     def __sub__(self, other):
         if isinstance(other, Quaternion):
-            return Rotation.from_quaternion(self.quaternion * other.conjugate())
+            return Rotation.from_quaternion(self.quaternion.inv() * other)
         if isinstance(other, Rotation):
-            return Rotation.from_quaternion(
-                self.quaternion * other.quaternion.conjugate()
-            )
+            return Rotation.from_quaternion(self.quaternion.inv() * other.quaternion)
         raise TypeError
 
     def __mul__(self, other):
         if not isinstance(other, float):
             raise TypeError
-        old_theta = np.arccos(self.quaternion.w) * 2
-
-        rot_axis = Vector3(
-            self.quaternion.x, self.quaternion.y, self.quaternion.z
-        ) / np.sin(old_theta / 2)
+        if self.quaternion.w >= -1 and self.quaternion.w <= 1:
+            old_theta = np.arccos(self.quaternion.w) * 2
+        elif self.quaternion.w > 1:  # 1.000000000001 shold be considered as 1.0
+            old_theta = 0
+        else:
+            old_theta = np.pi / 2
+        if not np.isclose(np.sin(old_theta / 2), 0):
+            rot_axis = Vector3(
+                self.quaternion.x, self.quaternion.y, self.quaternion.z
+            ) / np.sin(old_theta / 2)
+        else:
+            rot_axis = Vector3(0, 0, 0)
         new_theta = old_theta * other
         sin_theta = np.sin(new_theta / 2)
         return Rotation.from_quaternion(
