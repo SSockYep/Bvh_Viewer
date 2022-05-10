@@ -135,7 +135,7 @@ class Animation:
         self.poses = copy.deepcopy(poses)
 
     @classmethod
-    def from_bvh_data(cls, tree, frame, frame_time, motion):
+    def from_bvh_data(cls, tree: BvhTree, frame, frame_time, motion):
         poses = []
         for v in motion:
             poses.append(Pose.from_bvh_data(tree, v))
@@ -176,6 +176,20 @@ class Animation:
         for i in range(int(np.floor(time / 2)) + 1):
             new_poses[frame + i] += delta * trans_func(i / int(np.floor(time / 2)))
         return Animation(self.skeleton, self.frame, self.frame_time, new_poses)
+
+    def stitch(self, other, time, trans_func):
+        if self.skeleton.num_nodes() != other.skeleton.num_nodes():
+            raise ValueError
+        if time > len(other.poses):
+            raise IndexError
+        new_poses = copy.deepcopy(other.poses)
+        delta = other.poses[0] - self.poses[-1]
+        for i in range(time):
+            new_poses[i] = new_poses[i] + delta * trans_func(i / time)
+
+        return Animation(
+            self.skeleton, self.frame, self.frame_time, self.poses + new_poses
+        )
 
     def _get_node_global_position(self, node, pose):
         mat = Matrix4x4(np.eye(4, 4))
