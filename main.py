@@ -15,7 +15,7 @@ from ui.tkframe import tkRenderFrame, tkUtilFrame
 import copy
 import pdb
 
-from utility.transition_functions import easeInOutCos
+from utility.transition_functions import easeInOutCos, easeInOutCubic
 
 
 def main():
@@ -24,14 +24,16 @@ def main():
     root = tkinter.Tk()
     callback = Callback(cam, root)
     loader = BvhLoader("01_01.bvh")
-    pose = None
-    # pose = BvhLoader("01_02.bvh").load().poses[4]
-    # pose.root_translation = pose.root_translation + Vector3(15, 0, 0)
     animation = loader.load()
-    pose = copy.deepcopy(animation.poses[1695])
-    pose.rotations[18] = Rotation.from_quaternion(Quaternion(1, 0, 0, 0))
+    pose = None
+    animation2 = BvhLoader("01_02.bvh").load()
+    # pose = animation2.poses[4]
+    # pose.root_translation = pose.root_translation + Vector3(1, 0, 0)
+    # pose = copy.deepcopy(animation.poses[1695])
+    # pose.rotations[18] = Rotation.from_quaternion(Quaternion(1, 0, 0, 0))
 
-    animation = animation.warp(pose=pose, frame=1695, time=30, trans_func=easeInOutCos)
+    # animation = animation.warp(pose=pose, frame=1695, time=30, trans_func=easeInOutCos)
+    animation = animation.stitch(animation2, 120, easeInOutCubic)
 
     root.grid()
     root.columnconfigure(0, weight=1)

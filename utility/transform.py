@@ -81,9 +81,9 @@ class Rotation:
 
     def __sub__(self, other):
         if isinstance(other, Quaternion):
-            return Rotation.from_quaternion(self.quaternion.inv() * other)
+            return Rotation.from_quaternion(other.inv() * self.quaternion)
         if isinstance(other, Rotation):
-            return Rotation.from_quaternion(self.quaternion.inv() * other.quaternion)
+            return Rotation.from_quaternion(other.quaternion.inv() * self.quaternion)
         raise TypeError
 
     def __mul__(self, other):

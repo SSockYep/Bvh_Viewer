@@ -32,8 +32,8 @@ class Pose:
         new_rotations = []
         for i in range(len(self.rotations)):
             new_rotations.append(self.rotations[i] + other.rotations[i])
-        root_translation = self.root_translation + other.root_translation
-        return Pose(new_rotations, root_translation)
+        new_translation = self.root_translation + other.root_translation
+        return Pose(new_rotations, new_translation)
 
     def __sub__(self, other):
         if not isinstance(other, Pose):
@@ -43,8 +43,8 @@ class Pose:
         new_rotations = []
         for i in range(len(self.rotations)):
             new_rotations.append(self.rotations[i] - other.rotations[i])
-        root_translation = self.root_translation - other.root_translation
-        return Pose(new_rotations, root_translation)
+        new_translation = self.root_translation - other.root_translation
+        return Pose(new_rotations, new_translation)
 
     def __mul__(self, other):
         if not isinstance(other, float):
@@ -53,16 +53,8 @@ class Pose:
         new_rotations = []
         for i in range(len(self.rotations)):
             new_rotations.append(self.rotations[i] * other)
-        new_root_translation = self.root_translation * other
-        return Pose(new_rotations, new_root_translation)
-
-    def __div__(self, other):
-        if not isinstance(other, float):
-            raise TypeError
-        new_rotations = []
-        for i in range(len(self.rotations)):
-            new_rotations.append(self.rotations[i] / other)
-        return Pose(new_rotations, self.root_translation)
+        new_translation = self.root_translation * other
+        return Pose(new_rotations, new_translation)
 
     class _ChannelParser:
         def __init__(self, channels, values):
@@ -168,7 +160,7 @@ class Animation:
         new_poses = copy.deepcopy(self.poses)
         start_frame = frame - int(np.ceil(time / 2))
         # end_frame = frame + int(np.floor(time / 2))
-        delta = new_poses[frame] - pose
+        delta = pose - new_poses[frame]
         for i in range(int(np.ceil(time / 2))):
             new_poses[start_frame + i] += delta * (
                 1 - trans_func(i / int(np.ceil(time / 2)))
@@ -183,12 +175,15 @@ class Animation:
         if time > len(other.poses):
             raise IndexError
         new_poses = copy.deepcopy(other.poses)
-        delta = other.poses[0] - self.poses[-1]
+        delta = self.poses[-1] - other.poses[0]
         for i in range(time):
             new_poses[i] = new_poses[i] + delta * trans_func(i / time)
 
         return Animation(
-            self.skeleton, self.frame, self.frame_time, self.poses + new_poses
+            self.skeleton,
+            self.frame + other.frame,
+            self.frame_time,
+            self.poses + new_poses,
         )
 
     def _get_node_global_position(self, node, pose):
