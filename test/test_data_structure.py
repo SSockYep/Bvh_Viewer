@@ -212,11 +212,8 @@ class TestPose:
         )
 
     def test_add(self):
-        pose1 = Pose(
-            BvhTree(Node()), [Rotation() for _ in range(2)], Translation(Vector3())
-        )
+        pose1 = Pose([Rotation() for _ in range(2)], Translation(Vector3()))
         pose2 = Pose(
-            BvhTree(Node()),
             [Rotation.from_euler("xyz", np.pi, 0, 0) for _ in range(2)],
             Translation(Vector3()),
         )
@@ -226,27 +223,17 @@ class TestPose:
         )
 
     def test_sub(self):
-        pose1 = Pose(BvhTree(Node()), [Rotation()], Translation(Vector3()))
-        pose2 = Pose(
-            BvhTree(Node()),
-            [Rotation.from_euler("xyz", np.pi, 0, 0)],
-            Translation(Vector3()),
-        )
+        pose1 = Pose([Rotation()], Translation(Vector3()))
+        pose2 = Pose([Rotation.from_euler("xyz", np.pi, 0, 0)], Translation(Vector3()),)
         added = pose1 - pose2
         assert added.rotations[0] == Rotation() - Rotation.from_euler(
             "xyz", np.pi, 0, 0
         )
 
     def test_mult(self):
-        pose = Pose(
-            BvhTree(Node()),
-            [Rotation.from_euler("xyz", np.pi, 0, 0)],
-            Translation(Vector3()),
-        )
+        pose = Pose([Rotation.from_euler("xyz", np.pi, 0, 0)], Translation(Vector3()),)
         res = Pose(
-            BvhTree(Node()),
-            [Rotation.from_euler("xyz", np.pi / 2, 0, 0)],
-            Translation(Vector3()),
+            [Rotation.from_euler("xyz", np.pi / 2, 0, 0)], Translation(Vector3()),
         )
         print(pose.rotations[0].quaternion)
         pose2 = pose * 0.5

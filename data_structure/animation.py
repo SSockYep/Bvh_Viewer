@@ -10,10 +10,7 @@ import pdb
 
 
 class Pose:
-    def __init__(self, tree: BvhTree, rotations: list, root_translation: Translation):
-        if tree.num_nodes != len(rotations):
-            assert ValueError
-        self.tree = tree
+    def __init__(self, rotations: list, root_translation: Translation):
         self.root_translation = Translation(root_translation.to_vector())
         self.rotations = copy.deepcopy(rotations)
 
@@ -36,7 +33,7 @@ class Pose:
         for i in range(len(self.rotations)):
             new_rotations.append(self.rotations[i] + other.rotations[i])
         root_translation = self.root_translation + other.root_translation
-        return Pose(self.tree, new_rotations, root_translation)
+        return Pose(new_rotations, root_translation)
 
     def __sub__(self, other):
         if not isinstance(other, Pose):
@@ -47,7 +44,7 @@ class Pose:
         for i in range(len(self.rotations)):
             new_rotations.append(self.rotations[i] - other.rotations[i])
         root_translation = self.root_translation - other.root_translation
-        return Pose(self.tree, new_rotations, root_translation)
+        return Pose(new_rotations, root_translation)
 
     def __mul__(self, other):
         if not isinstance(other, float):
@@ -57,7 +54,7 @@ class Pose:
         for i in range(len(self.rotations)):
             new_rotations.append(self.rotations[i] * other)
         new_root_translation = self.root_translation * other
-        return Pose(self.tree, new_rotations, new_root_translation)
+        return Pose(new_rotations, new_root_translation)
 
     def __div__(self, other):
         if not isinstance(other, float):
@@ -65,7 +62,7 @@ class Pose:
         new_rotations = []
         for i in range(len(self.rotations)):
             new_rotations.append(self.rotations[i] / other)
-        return Pose(self.tree, new_rotations, self.root_translation)
+        return Pose(new_rotations, self.root_translation)
 
     class _ChannelParser:
         def __init__(self, channels, values):
@@ -127,7 +124,7 @@ class Pose:
             rotations[i] = rotation
             if root_trans:
                 root_translation = root_trans
-        return cls(tree, rotations, root_translation)
+        return cls(rotations, root_translation)
 
 
 class Animation:
