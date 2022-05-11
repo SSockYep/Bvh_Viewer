@@ -132,6 +132,13 @@ class Quaternion:
         con = self.conjugate()
         return con / (con @ con)
 
+    def log(self):
+        a = np.arccos(self.w)
+        x = self.x * a
+        y = self.y * a
+        z = self.z * a
+        return Quaternion(0, x, y, z)
+
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)
 
