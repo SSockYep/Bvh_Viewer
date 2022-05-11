@@ -74,6 +74,9 @@ class TestRotation:
     def test_eq(self):
         assert Rotation(Quaternion(1, 0, 0, 0)) == Rotation(Quaternion(-1, 0, 0, 0))
 
+    def test_to_vec(self):
+        assert Rotation(Quaternion(1, 0, 0, 0)).to_vec() == Vector3(0, 0, 0)
+
 
 class TestTransform:
     def test_init(self):

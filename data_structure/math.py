@@ -1,3 +1,4 @@
+import pdb
 import numpy as np
 
 
@@ -131,22 +132,6 @@ class Quaternion:
     def inv(self):
         con = self.conjugate()
         return con / (con @ con)
-
-    def log(self):
-        a = np.arccos(self.w)
-        self_abs = np.sqrt(self @ self)
-        x = self.x * a / self_abs
-        y = self.y * a / self_abs
-        z = self.z * a / self_abs
-        return Quaternion(np.log(self_abs), x, y, z)
-
-    def exp(self):
-        v = np.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
-        cosv = np.cos(v)
-        sinv = np.sin(v)
-        return Quaternion(
-            cosv, self.x * sinv / v, self.y * sinv / v, self.z * sinv / v
-        ) * np.exp(self.w)
 
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)

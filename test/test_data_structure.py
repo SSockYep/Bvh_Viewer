@@ -111,21 +111,8 @@ class TestQuaternion:
     def test_neg(self):
         assert -Quaternion(1, 0, 0, 0) == Quaternion(-1, 0, 0, 0)
 
-    def test_log(self):
-        assert Quaternion(1, 0, 0, 0).log() == Quaternion(0, 0, 0, 0)
-
-    def test_log_general(self):
-        assert Quaternion(1, 1, 1, 1).log() == Quaternion(np.log(2), 0, 0, 0)
-
     def test_float_mul(self):
         assert Quaternion(1, 1, 1, 1) * 5 == Quaternion(5, 5, 5, 5)
-
-    def test_exp(self):
-        cosv = np.cos(np.sqrt(14))
-        sinv = np.sin(np.sqrt(14)) / np.sqrt(14)
-        assert Quaternion(4, 3, 2, 1).exp() == Quaternion(
-            cosv, sinv * 3, sinv * 2, sinv
-        ) * np.exp(4)
 
 
 class TestMatrix4x4:
