@@ -89,6 +89,8 @@ class Rotation:
     def __mul__(self, other):
         if not isinstance(other, float):
             raise TypeError
+        if np.isclose(other, 0):
+            return Rotation(Quaternion(1, 0, 0, 0))
         return Rotation.from_vec(self.to_vec() * other)
 
     @classmethod
@@ -162,6 +164,8 @@ class Rotation:
     @classmethod
     def from_vec(cls, vec: Vector3):
         angle = np.sqrt(vec @ vec)
+        if np.isclose(angle, 0):
+            return cls()
         w = np.cos(angle / 2)
         v = (vec / angle) * np.sin(angle / 2)
         return cls(Quaternion(w, v.x, v.y, v.z))

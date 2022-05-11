@@ -1,3 +1,4 @@
+from decimal import DivisionByZero
 import pdb
 import numpy as np
 
@@ -47,6 +48,8 @@ class Vector3:
         return Vector3(self.x * other, self.y * other, self.z * other)
 
     def __truediv__(self, other):  # self / scalar
+        if np.isclose(other, 0):
+            raise ZeroDivisionError
         return Vector3(self.x / other, self.y / other, self.z / other)
 
     @classmethod
