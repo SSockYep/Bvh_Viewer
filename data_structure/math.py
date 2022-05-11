@@ -134,10 +134,11 @@ class Quaternion:
 
     def log(self):
         a = np.arccos(self.w)
-        x = self.x * a
-        y = self.y * a
-        z = self.z * a
-        return Quaternion(0, x, y, z)
+        self_abs = np.sqrt(self @ self)
+        x = self.x * a / self_abs
+        y = self.y * a / self_abs
+        z = self.z * a / self_abs
+        return Quaternion(self.w * np.log(self_abs), x, y, z)
 
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)
