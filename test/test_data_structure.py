@@ -117,6 +117,9 @@ class TestQuaternion:
     def test_log_general(self):
         assert Quaternion(1, 1, 1, 1).log() == Quaternion(np.log(2), 0, 0, 0)
 
+    def test_float_mul(self):
+        assert Quaternion(1, 1, 1, 1) * 5 == Quaternion(5, 5, 5, 5)
+
 
 class TestMatrix4x4:
     def test_matrix_init(self):
