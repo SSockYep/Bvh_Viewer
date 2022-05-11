@@ -138,7 +138,7 @@ class Quaternion:
         x = self.x * a / self_abs
         y = self.y * a / self_abs
         z = self.z * a / self_abs
-        return Quaternion(self.w * np.log(self_abs), x, y, z)
+        return Quaternion(np.log(self_abs), x, y, z)
 
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)

@@ -120,6 +120,13 @@ class TestQuaternion:
     def test_float_mul(self):
         assert Quaternion(1, 1, 1, 1) * 5 == Quaternion(5, 5, 5, 5)
 
+    def test_exp(self):
+        cosv = np.cos(np.sqrt(14))
+        sinv = np.sin(np.sqrt(14)) / np.sqrt(14)
+        assert Quaternion(4, 3, 2, 1).exp() == Quaternion(
+            cosv, sinv * 3, sinv * 2, sinv
+        ) * np.exp(4)
+
 
 class TestMatrix4x4:
     def test_matrix_init(self):
