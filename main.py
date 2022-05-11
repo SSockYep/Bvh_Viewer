@@ -28,7 +28,8 @@ def main():
     pose = None
 
     animation2 = BvhLoader("01_02.bvh").load()
-
+    # pose = animation2.poses[4]
+    # pose.root_translation = pose.root_translation + Vector3(1, 0, 0)
     # pose = copy.deepcopy(animation.poses[1695])
     # pose.rotations[18] = Rotation.from_quaternion(Quaternion(1, 0, 0, 0))
 

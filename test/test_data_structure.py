@@ -111,6 +111,9 @@ class TestQuaternion:
     def test_neg(self):
         assert -Quaternion(1, 0, 0, 0) == Quaternion(-1, 0, 0, 0)
 
+    def test_log(self):
+        assert Quaternion(1, 0, 0, 0).log() == Quaternion(0, 0, 0, 0)
+
 
 class TestMatrix4x4:
     def test_matrix_init(self):
@@ -193,23 +196,15 @@ class TestMatrix4x4:
 
 class TestPose:
     def test_init(self):
-        root = Node()
-        node1 = Node()
-        node2 = Node()
-        node1.set_parent(root)
-        node2.set_parent(root)
-        tree = BvhTree(root)
         rotations = [(Rotation.from_quaternion(Quaternion())) for _ in range(3)]
-        assert Pose(tree, rotations, Translation(Vector3(1, 1, 1)))
+        assert Pose(rotations, Translation(Vector3(1, 1, 1)))
 
     def test_equal(self):
         node1 = Node()
         node2 = Node()
         rotations = [Rotation(Quaternion()) for _ in range(2)]
         translation = Translation(Vector3())
-        assert Pose(BvhTree(node1), rotations, translation) == Pose(
-            BvhTree(node2), rotations, translation
-        )
+        assert Pose(rotations, translation) == Pose(rotations, translation)
 
     def test_add(self):
         pose1 = Pose([Rotation() for _ in range(2)], Translation(Vector3()))
