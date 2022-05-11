@@ -140,6 +140,14 @@ class Quaternion:
         z = self.z * a / self_abs
         return Quaternion(np.log(self_abs), x, y, z)
 
+    def exp(self):
+        v = np.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
+        cosv = np.cos(v)
+        sinv = np.sin(v)
+        return Quaternion(
+            cosv, self.x * sinv / v, self.y * sinv / v, self.z * sinv / v
+        ) * np.exp(self.w)
+
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)
 
