@@ -186,3 +186,6 @@ class Matrix4x4:
 
     def to_numpy(self):
         return np.copy(self._mat)
+
+    def transpose(self):
+        return Matrix4x4(self._mat.T)
