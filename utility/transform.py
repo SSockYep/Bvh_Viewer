@@ -58,6 +58,8 @@ class Translation:
 
 class Rotation:
     def __init__(self, q: Quaternion = Quaternion()):
+        if not np.isclose(q @ q, 1):
+            raise ValueError
         self.quaternion = copy(q)
 
     def __eq__(self, other):
@@ -186,6 +188,8 @@ class Rotation:
             y = self.quaternion.y / np.sin(theta)
             z = self.quaternion.z / np.sin(theta)
         vec = Vector3(x, y, z)
+        if np.isclose(vec @ vec, 0):
+            return Vector3(0, 0, 0)
         vec = (vec / np.sqrt(vec @ vec)) * 2 * theta
         return vec
 

@@ -19,22 +19,22 @@ from utility.transition_functions import easeInOutCos, easeInOutCubic
 
 
 def main():
-    renderer = Renderer(scale=0.05)
+    renderer = Renderer(scale=0.01)
     cam = Camera()
     root = tkinter.Tk()
     callback = Callback(cam, root)
-    loader = BvhLoader("01_01.bvh")
+    loader = BvhLoader("02_01.bvh")
     animation = loader.load()
     pose = None
 
-    animation2 = BvhLoader("01_02.bvh").load()
-    # pose = animation2.poses[4]
-    # pose.root_translation = pose.root_translation + Vector3(1, 0, 0)
-    # pose = copy.deepcopy(animation.poses[1695])
-    # pose.rotations[18] = Rotation.from_quaternion(Quaternion(1, 0, 0, 0))
+    ## Animation Stitch
+    # animation2 = BvhLoader("02_05.bvh").load()
+    # animation = animation.stitch(animation2, 120, easeInOutCubic)
 
-    # animation = animation.warp(pose=pose, frame=1695, time=30, trans_func=easeInOutCos)
-    animation = animation.stitch(animation2, 120, easeInOutCubic)
+    ## Animation Time Warp
+    animation2 = BvhLoader("02_05.bvh").load()
+    pose = animation2.poses[8]
+    animation = animation.warp(pose=pose, frame=170, time=30, trans_func=easeInOutCos)
 
     root.grid()
     root.columnconfigure(0, weight=1)

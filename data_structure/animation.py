@@ -175,9 +175,40 @@ class Animation:
         if time > len(other.poses):
             raise IndexError
         new_poses = copy.deepcopy(other.poses)
-        delta = self.poses[-1] - other.poses[0]
+        root_idx = self.skeleton.get_index_of_node(self.skeleton.root)
+        # calc alignment difference
+        ad_pos = self.poses[-1].root_translation - new_poses[0].root_translation
+        ad_rot = Rotation.from_matrix(
+            self.poses[-1].rotations[root_idx].to_matrix()
+            @ new_poses[0].rotations[root_idx].to_matrix().transpose()
+        )
+        q = ad_rot.to_quaternion()
+        theta = 2 * np.arctan((Vector3(q.x, q.y, q.z) @ Vector3(0.0, 1.0, 0.0)) / q.w)
+        ad_rot = Rotation.from_vec(Vector3(0.0, 1.0, 0.0) * theta)
+
+        for i in range(1, len(new_poses)):
+            new_poses[i].root_translation = (
+                new_poses[0].root_translation
+                + Translation(
+                    ad_rot.rotate(
+                        (
+                            new_poses[i].root_translation
+                            - new_poses[0].root_translation
+                        ).to_vector()
+                    )
+                )
+                + ad_pos
+            )
+            new_poses[i].rotations[root_idx] = ad_rot + new_poses[i].rotations[root_idx]
+        new_poses[0].root_translation += ad_pos
+        new_poses[0].rotations[root_idx] += ad_rot
+
         for i in range(time):
-            new_poses[i] = new_poses[i] + delta * trans_func(i / time)
+            for j in range(self.skeleton.num_nodes()):
+                if j != root_idx:
+                    new_poses[i].rotations[j] += (
+                        self.poses[-1].rotations[j] - new_poses[i].rotations[j]
+                    ) * trans_func(i / time)
 
         return Animation(
             self.skeleton,
