@@ -89,8 +89,7 @@ class Rotation:
     def __mul__(self, other):
         if not isinstance(other, float):
             raise TypeError
-
-        return Rotation.from_quaternion((self.quaternion.log() * other).exp())
+        return Rotation.from_vec(self.to_vec() * other)
 
     @classmethod
     def from_quaternion(cls, q: Quaternion):
@@ -160,8 +159,31 @@ class Rotation:
             q.append(rotate(seq[i], angles[i]))
         return cls(q[2] * q[1] * q[0])
 
+    @classmethod
+    def from_vec(cls, vec: Vector3):
+        angle = np.sqrt(vec @ vec)
+        w = np.cos(angle / 2)
+        v = (vec / angle) * np.sin(angle / 2)
+        return cls(Quaternion(w, v.x, v.y, v.z))
+
     def to_quaternion(self):
         return copy(self.quaternion)
+
+    def to_vec(self):
+        theta = np.arccos(self.quaternion.w)
+        if np.isclose(theta, 0):
+            return Vector3(0, 0, 0)
+        if np.isclose(theta, np.pi):
+            x = self.quaternion.x
+            y = self.quaternion.y
+            z = self.quaternion.z
+        else:
+            x = self.quaternion.x / np.sin(theta)
+            y = self.quaternion.y / np.sin(theta)
+            z = self.quaternion.z / np.sin(theta)
+        vec = Vector3(x, y, z)
+        vec = (vec / np.sqrt(vec @ vec)) * 2 * theta
+        return vec
 
     def to_matrix(self):
         q = self.quaternion
