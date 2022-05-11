@@ -89,28 +89,8 @@ class Rotation:
     def __mul__(self, other):
         if not isinstance(other, float):
             raise TypeError
-        if self.quaternion.w >= -1 and self.quaternion.w <= 1:
-            old_theta = np.arccos(self.quaternion.w) * 2
-        elif self.quaternion.w > 1:  # 1.000000000001 shold be considered as 1.0
-            old_theta = 0
-        else:
-            old_theta = np.pi / 2
-        if not np.isclose(np.sin(old_theta / 2), 0):
-            rot_axis = Vector3(
-                self.quaternion.x, self.quaternion.y, self.quaternion.z
-            ) / np.sin(old_theta / 2)
-        else:
-            rot_axis = Vector3(0, 0, 0)
-        new_theta = old_theta * other
-        sin_theta = np.sin(new_theta / 2)
-        return Rotation.from_quaternion(
-            Quaternion(
-                np.cos(new_theta / 2),
-                rot_axis.x * sin_theta,
-                rot_axis.y * sin_theta,
-                rot_axis.z * sin_theta,
-            )
-        )
+
+        return Rotation.from_quaternion((self.quaternion.log() * other).exp())
 
     @classmethod
     def from_quaternion(cls, q: Quaternion):
