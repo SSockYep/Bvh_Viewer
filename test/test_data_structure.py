@@ -193,6 +193,14 @@ class TestMatrix4x4:
         vec = Vector3(1, 0, 0)
         assert mat @ vec == Vector3(0, 0, -1)
 
+    def test_transpose(self):
+        mat = Matrix4x4(
+            np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
+        )
+        assert mat.transpose() == Matrix4x4(
+            np.array([[1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [4, 8, 12, 16]])
+        )
+
 
 class TestPose:
     def test_init(self):
