@@ -114,6 +114,9 @@ class TestQuaternion:
     def test_log(self):
         assert Quaternion(1, 0, 0, 0).log() == Quaternion(0, 0, 0, 0)
 
+    def test_log_general(self):
+        assert Quaternion(1, 1, 1, 1).log() == Quaternion(np.log(2), 0, 0, 0)
+
 
 class TestMatrix4x4:
     def test_matrix_init(self):
