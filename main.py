@@ -29,12 +29,14 @@ def main():
 
     ## Animation Stitch
     # animation2 = BvhLoader("02_05.bvh").load()
-    # animation = animation.stitch(animation2, 120, easeInOutCubic)
+    # animation = animation.stitch(animation2, 30, easeInOutCubic)
 
     ## Animation Time Warp
     animation2 = BvhLoader("02_05.bvh").load()
     pose = animation2.poses[8]
-    animation = animation.warp(pose=pose, frame=170, time=30, trans_func=easeInOutCos)
+    pose.rotations[8] = Rotation.from_quaternion(Quaternion())
+    pose.rotations[22] = Rotation.from_quaternion(Quaternion())
+    animation = animation.warp(pose=pose, frame=170, time=100, trans_func=easeInOutCos)
 
     root.grid()
     root.columnconfigure(0, weight=1)

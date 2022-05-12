@@ -165,11 +165,11 @@ class Rotation:
 
     @classmethod
     def from_vec(cls, vec: Vector3):
-        angle = np.sqrt(vec @ vec)
+        angle = vec.magnitude()
         if np.isclose(angle, 0):
             return cls()
         w = np.cos(angle / 2)
-        v = (vec / angle) * np.sin(angle / 2)
+        v = (vec / vec.magnitude()) * np.sin(angle / 2)
         return cls(Quaternion(w, v.x, v.y, v.z))
 
     def to_quaternion(self):
@@ -188,9 +188,9 @@ class Rotation:
             y = self.quaternion.y / np.sin(theta)
             z = self.quaternion.z / np.sin(theta)
         vec = Vector3(x, y, z)
-        if np.isclose(vec @ vec, 0):
+        if np.isclose(vec.magnitude(), 0):
             return Vector3(0, 0, 0)
-        vec = (vec / np.sqrt(vec @ vec)) * 2 * theta
+        vec = (vec / vec.magnitude()) * 2 * theta
         return vec
 
     def to_matrix(self):
