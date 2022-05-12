@@ -77,6 +77,11 @@ class TestRotation:
     def test_to_vec(self):
         assert Rotation(Quaternion(1, 0, 0, 0)).to_vec() == Vector3(0, 0, 0)
 
+    def test_mult_scarla(self):
+        assert Rotation.from_euler("xyz", np.pi / 3, 0, 0) * 0.5 == Rotation.from_euler(
+            "xyz", np.pi / 6, 0, 0
+        )
+
 
 class TestTransform:
     def test_init(self):
@@ -86,7 +91,7 @@ class TestTransform:
         t = Translation.from_vector(Vector3(1, 1, 1))
         r = Rotation.from_euler("xyz", np.pi / 2, 0, 0)
         np_mat = np.array(
-            [[1, 0, 0, 1], [0, 0, -1, 1], [0, 1, 0, 1], [0, 0, 0, 1]], dtype=np.float
+            [[1, 0, 0, 1], [0, 0, -1, 1], [0, 1, 0, 1], [0, 0, 0, 1]], dtype=np.float64
         )
         assert Transform(t, r).to_matrix() == Matrix4x4(np_mat)
 
