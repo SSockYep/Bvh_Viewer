@@ -77,7 +77,7 @@ class TestRotation:
     def test_to_vec(self):
         assert Rotation(Quaternion(1, 0, 0, 0)).to_vec() == Vector3(0, 0, 0)
 
-    def test_mult_scarla(self):
+    def test_mult_scalar(self):
         assert Rotation.from_euler("xyz", np.pi / 3, 0, 0) * 0.5 == Rotation.from_euler(
             "xyz", np.pi / 6, 0, 0
         )
