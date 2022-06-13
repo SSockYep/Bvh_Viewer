@@ -11,6 +11,8 @@ from gl_render.callback import Callback
 from ui.tkutil import tkInterFrameController
 from utility.bvh_loader import BvhLoader
 from ui.tkframe import tkAnimationFrame, tkUtilFrame
+import simple_hopper
+import gym
 
 import copy
 import pdb
@@ -25,11 +27,13 @@ def main():
     root = tkinter.Tk()
     animation = None
     pose = None
+    env = None
     callback = Callback(cam, root)
 
+    env = gym.make("SimpleHopper-v0")
     # load animation
-    loader = BvhLoader("02_01.bvh")
-    animation = loader.load()
+    # loader = BvhLoader("02_01.bvh")
+    # animation = loader.load()
 
     ## Animation Stitch
     # animation2 = BvhLoader("02_01.bvh").load()
