@@ -14,6 +14,7 @@ from ui.tkframe import tkRenderFrame, tkUtilFrame
 
 import copy
 import pdb
+from time import time
 
 from utility.transition_functions import easeInOutCos, easeInOutCubic
 
@@ -28,15 +29,15 @@ def main():
     pose = None
 
     ## Animation Stitch
-    # animation2 = BvhLoader("02_05.bvh").load()
-    # animation = animation.stitch(animation2, 30, easeInOutCubic)
+    animation2 = BvhLoader("02_01.bvh").load()
+    animation = animation.stitch(animation2, 30, easeInOutCubic)
 
     ## Animation Time Warp
-    animation2 = BvhLoader("02_05.bvh").load()
-    pose = animation2.poses[8]
-    pose.rotations[8] = Rotation.from_quaternion(Quaternion())
-    pose.rotations[22] = Rotation.from_quaternion(Quaternion())
-    animation = animation.warp(pose=pose, frame=170, time=100, trans_func=easeInOutCos)
+    # animation2 = BvhLoader("02_05.bvh").load()
+    # pose = animation2.poses[8]
+    # pose.rotations[8] = Rotation.from_quaternion(Quaternion())
+    # # pose.rotations[22] = Rotation.from_quaternion(Quaternion())
+    # animation = animation.warp(pose=pose, frame=170, time=100, trans_func=easeInOutCos)
 
     root.grid()
     root.columnconfigure(0, weight=1)
