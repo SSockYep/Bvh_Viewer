@@ -3,7 +3,6 @@ import numpy as np
 from data_structure.math import *
 from data_structure.animation import *
 from data_structure.bvh_tree import *
-from env.hopper_env import BodyModel, Joint
 
 
 class TestVector3:
@@ -319,13 +318,3 @@ class TestBvhTree:
         node2 = Node(parent=node1)
         tree = BvhTree(node1, [node1, node2])
         assert tree.num_nodes() == 2
-
-
-class TestJoint:
-    def testInit(self):
-        assert Joint()
-
-
-class TestBodyModel:
-    def testInit(self):
-        assert BodyModel(root=Node())

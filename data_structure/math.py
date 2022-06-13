@@ -25,6 +25,9 @@ class Vector3:
     def __nq__(self, other):
         return not self.__eq__(other)
 
+    def __neg__(self):
+        return Vector3(-self.x, -self.y, -self.z)
+
     def __add__(self, other):  # self + other: Vector addition
         return Vector3(self.x + other.x, self.y + other.y, self.z + other.z)
 
