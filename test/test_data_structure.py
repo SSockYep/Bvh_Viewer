@@ -3,7 +3,7 @@ import numpy as np
 from data_structure.math import *
 from data_structure.animation import *
 from data_structure.bvh_tree import *
-from data_structure.body_model import BodyModel, Joint
+from env.hopper_env import BodyModel, Joint
 
 
 class TestVector3:
@@ -79,6 +79,9 @@ class TestVector3:
         vec = Vector3(1, 2, 3)
         scal = 5
         assert vec * scal == Vector3(5, 10, 15)
+
+    def test_neg(self):
+        assert -Vector3(1, 2, 3) == Vector3(-1, -2, -3)
 
 
 class TestQuaternion:

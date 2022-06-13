@@ -117,9 +117,10 @@ class Renderer:
         glVertex(pos.x, pos.y, pos.z)
         glEnd()
 
-    def render_box(self, width, length, height, trans, rot):
+    def render_box(self, width, length, height, transf):
         min_bound = Vector3(-width / 2, -height / 2, -length / 2)
         max_bound = -min_bound
+        transf.to_matrix()
         points = np.array(
             [
                 [min_bound.x, min_bound.y, min_bound.z],
