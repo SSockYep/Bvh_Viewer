@@ -7,6 +7,7 @@ from .math import *
 from data_structure.bvh_tree import *
 
 import pdb
+from time import time as ptime
 
 
 class Pose:
@@ -128,9 +129,11 @@ class Animation:
 
     @classmethod
     def from_bvh_data(cls, tree: BvhTree, frame, frame_time, motion):
+        start_time = ptime()
         poses = []
         for v in motion:
             poses.append(Pose.from_bvh_data(tree, v))
+        print("Animation.from_bvh_data", ptime() - start_time)
         return cls(tree, frame, frame_time, poses)
 
     def get_pose(self, frame):
@@ -170,6 +173,7 @@ class Animation:
         return Animation(self.skeleton, self.frame, self.frame_time, new_poses)
 
     def stitch(self, other, time, trans_func):
+        start_time = ptime()
         if self.skeleton.num_nodes() != other.skeleton.num_nodes():
             raise ValueError
         if time > len(other.poses):
@@ -209,7 +213,7 @@ class Animation:
                     new_poses[i].rotations[j] += (
                         self.poses[-1].rotations[j] - new_poses[i].rotations[j]
                     ) * trans_func(i / time)
-
+        print("stitch:", ptime() - start_time)
         return Animation(
             self.skeleton,
             self.frame + other.frame,
@@ -238,4 +242,3 @@ class Animation:
             idx = self.skeleton.get_index_of_node(node)
         pos = mat @ Vector3(0, 0, 0)
         return pos
-

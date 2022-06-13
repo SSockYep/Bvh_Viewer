@@ -1,14 +1,13 @@
 import tkinter
 import numpy as np
 from pyopengltk import OpenGLFrame
+from data_structure.math import Vector3
 
 from ui.tkutil import tkScrollController
 
 
 class tkRenderFrame(OpenGLFrame):
-    def __init__(
-        self, renderer, cam, callback, animation, master, pose=None, *args, **kwargs
-    ):
+    def __init__(self, renderer, cam, callback, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.renderer = renderer
         self.cam = cam
@@ -17,9 +16,23 @@ class tkRenderFrame(OpenGLFrame):
         self.bind("<ButtonPress-2>", callback.mclick_callback)
         self.bind("<ButtonPress-3>", callback.rclick_callback)
         self.bind("<ButtonRelease>", callback.release_callback)
-        self.skeleton = animation.skeleton
+
+
+class tkRLFrame(tkRenderFrame):
+    def __init__(self, renderer, cam, callback, master, *args, **kwargs):
+        super().__init__(renderer, cam, callback, master, *args, **kwargs)
+
+
+class tkAnimationFrame(tkRenderFrame):
+    def __init__(
+        self, renderer, cam, callback, animation, master, pose=None, *args, **kwargs
+    ):
+        super().__init__(renderer, cam, callback, master, *args, **kwargs)
         self.animation = animation
+
+        self.skeleton = animation.skeleton
         self.animate = 1
+
         self.frame_now = 0
         self.selected_joint = "None"
         self.pose = pose
@@ -33,6 +46,7 @@ class tkRenderFrame(OpenGLFrame):
         self.renderer.clear()
         self.renderer.render_perspective(self.cam)
         self.renderer.render_global_axis()
+
         self.renderer.render_pose(self.skeleton, pose)
         if self.pose:
             self.renderer.render_pose(
@@ -55,20 +69,25 @@ class tkUtilFrame(tkinter.Frame):
     def __init__(self, animation, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.grid()
-
-        self.aniframe_scroll = tkinter.Scale(
-            self, to=animation.frame - 1, orient=tkinter.HORIZONTAL
-        )
-
-        self.scroll_controller = tkScrollController(
-            self.aniframe_scroll, int(animation.frame_time * 1000)
-        )
         option_list = ["None"]
-        for i in range(animation.skeleton.num_nodes()):
-            node = animation.skeleton.get_node_by_index(i)
-            option_list.append(node.get_name())
         self.selected_joint = tkinter.StringVar()
         self.selected_joint.set(option_list[0])
+
+        if animation:
+            self.aniframe_scroll = tkinter.Scale(
+                self, to=animation.frame - 1, orient=tkinter.HORIZONTAL
+            )
+            self.scroll_controller = tkScrollController(
+                self.aniframe_scroll, int(animation.frame_time * 1000)
+            )
+            for i in range(animation.skeleton.num_nodes()):
+                node = animation.skeleton.get_node_by_index(i)
+                option_list.append(node.get_name())
+
+        else:
+            self.aniframe_scroll = tkinter.Scale(self, to=0, orient=tkinter.HORIZONTAL)
+            self.scroll_controller = tkScrollController(self.aniframe_scroll, 0)
+
         self.joint_option = tkinter.OptionMenu(self, self.selected_joint, *option_list)
         self.joint_option.configure(width=35)
         self.play_button = tkinter.Button(

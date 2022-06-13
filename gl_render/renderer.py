@@ -116,3 +116,39 @@ class Renderer:
         glBegin(GL_POINTS)
         glVertex(pos.x, pos.y, pos.z)
         glEnd()
+
+    def render_box(self, min_bound, max_bound):
+        points = np.array(
+            [
+                [min_bound.x, min_bound.y, min_bound.z],
+                [min_bound.x, min_bound.y, max_bound.z],
+                [min_bound.x, max_bound.y, min_bound.z],
+                [max_bound.x, min_bound.y, min_bound.z],
+                [min_bound.x, max_bound.y, max_bound.z],
+                [max_bound.x, min_bound.y, max_bound.z],
+                [max_bound.x, max_bound.y, min_bound.z],
+                [max_bound.x, max_bound.y, max_bound.z],
+            ],
+            dtype=np.float32,
+        )
+        points = points * (1/self.scale)
+        lines = np.array(
+            [
+                [0, 1],
+                [0, 2],
+                [0, 3],
+                [1, 4],
+                [1, 5],
+                [2, 4],
+                [2, 6],
+                [3, 5],
+                [3, 6],
+                [4, 7],
+                [5, 7],
+                [6, 7],
+            ],
+            dtype=np.uint32,
+        )
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glVertexPointer(3, GL_FLOAT, 3 * points.itemsize, points)
+        glDrawElements(GL_LINES, lines.size, GL_UNSIGNED_INT, lines)

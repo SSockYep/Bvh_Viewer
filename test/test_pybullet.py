@@ -13,7 +13,7 @@ startOrientation = pb.getQuaternionFromEuler([0, 0, 0])
 
 sphereId = pb.createCollisionShape(pb.GEOM_SPHERE, radius=0.1)
 footId = pb.createCollisionShape(pb.GEOM_BOX, halfExtents=[0.5, 0.2, 0.05])
-legId = pb.createCollisionShape(pb.GEOM_BOX, halfExtents=[0.05, 0.05, 1])
+legId = pb.createCollisionShape(pb.GEOM_BOX, halfExtents=[0.05, 0.05, 0.8])
 
 modelId = pb.createMultiBody(
     1,
@@ -22,7 +22,7 @@ modelId = pb.createMultiBody(
     startPos,
     startOrientation,
     linkMasses=[1, 1],
-    linkCollisionShapeIndices=[sphereId, legId],
+    linkCollisionShapeIndices=[-1, legId],
     linkVisualShapeIndices=[-1, -1],
     linkPositions=[[0.3, 0, 0], [0, 0, 1]],
     linkOrientations=[[0, 0, 0, 1], [0, 0, 0, 1]],
