@@ -24,6 +24,8 @@ def main():
     cam = Camera()
     root = tkinter.Tk()
     callback = Callback(cam, root)
+
+    # load animation
     loader = BvhLoader("02_01.bvh")
     animation = loader.load()
     pose = None
@@ -36,7 +38,11 @@ def main():
     # animation2 = BvhLoader("02_05.bvh").load()
     # pose = animation2.poses[8]
     # pose.rotations[8] = Rotation.from_quaternion(Quaternion())
+<<<<<<< HEAD
     # # pose.rotations[22] = Rotation.from_quaternion(Quaternion())
+=======
+    # pose.rotations[22] = Rotation.from_quaternion(Quaternion())
+>>>>>>> 9403687d74c0bef327e7e2474eb6f83b4dbbb0f2
     # animation = animation.warp(pose=pose, frame=170, time=100, trans_func=easeInOutCos)
 
     root.grid()

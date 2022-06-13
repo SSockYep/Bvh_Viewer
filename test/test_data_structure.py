@@ -3,6 +3,7 @@ import numpy as np
 from data_structure.math import *
 from data_structure.animation import *
 from data_structure.bvh_tree import *
+from data_structure.body_model import BodyModel, Joint
 
 
 class TestVector3:
@@ -49,7 +50,7 @@ class TestVector3:
 
     def test_magnitude(self):
         test_vec = Vector3(3, 4, 5)
-        assert test_vec.magnitude() == np.sqrt(3 ** 2 + 4 ** 2 + 5 ** 2)
+        assert test_vec.magnitude() == np.sqrt(3**2 + 4**2 + 5**2)
 
     def test_add(self):
         test_vec1 = Vector3(1, 2, 3)
@@ -227,16 +228,23 @@ class TestPose:
 
     def test_sub(self):
         pose1 = Pose([Rotation()], Translation(Vector3()))
-        pose2 = Pose([Rotation.from_euler("xyz", np.pi, 0, 0)], Translation(Vector3()),)
+        pose2 = Pose(
+            [Rotation.from_euler("xyz", np.pi, 0, 0)],
+            Translation(Vector3()),
+        )
         added = pose1 - pose2
         assert added.rotations[0] == Rotation() - Rotation.from_euler(
             "xyz", np.pi, 0, 0
         )
 
     def test_mult(self):
-        pose = Pose([Rotation.from_euler("xyz", np.pi, 0, 0)], Translation(Vector3()),)
+        pose = Pose(
+            [Rotation.from_euler("xyz", np.pi, 0, 0)],
+            Translation(Vector3()),
+        )
         res = Pose(
-            [Rotation.from_euler("xyz", np.pi / 2, 0, 0)], Translation(Vector3()),
+            [Rotation.from_euler("xyz", np.pi / 2, 0, 0)],
+            Translation(Vector3()),
         )
         print(pose.rotations[0].quaternion)
         pose2 = pose * 0.5
@@ -308,3 +316,13 @@ class TestBvhTree:
         node2 = Node(parent=node1)
         tree = BvhTree(node1, [node1, node2])
         assert tree.num_nodes() == 2
+
+
+class TestJoint:
+    def testInit(self):
+        assert Joint()
+
+
+class TestBodyModel:
+    def testInit(self):
+        assert BodyModel(root=Node())
