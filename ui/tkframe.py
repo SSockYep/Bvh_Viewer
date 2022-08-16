@@ -40,7 +40,6 @@ class tkAnimRenderFrame(tkRenderFrame):
 
         self.frame_now = 0
         self.selected_joint = "None"
-        self.pose = pose
 
     def initgl(self):
         self.renderer.clear()
