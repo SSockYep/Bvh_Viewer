@@ -5,11 +5,11 @@ from click import option
 from pyopengltk import OpenGLFrame
 from pytest import skip
 
-from ui.tkutil import tkScrollController
+from ui.tkutil import tkObjFileController, tkScrollController
 
 
 class tkRenderFrame(OpenGLFrame):
-    def __init__(self, renderer, cam, callback, animation, master, *args, **kwargs):
+    def __init__(self, master, renderer, cam, callback, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.renderer = renderer
         self.cam = cam
@@ -18,6 +18,11 @@ class tkRenderFrame(OpenGLFrame):
         self.bind("<ButtonPress-2>", callback.mclick_callback)
         self.bind("<ButtonPress-3>", callback.rclick_callback)
         self.bind("<ButtonRelease>", callback.release_callback)
+
+
+class tkAnimRenderFrame(tkRenderFrame):
+    def __init__(self, animation, master, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
         self.skeleton = animation.skeleton
         self.animation = animation
         self.animate = 1
@@ -46,7 +51,28 @@ class tkRenderFrame(OpenGLFrame):
         # self.renderer.render_pose() ## Get Pose idx
 
 
-class tkUtilFrame(tkinter.Frame):
+class tkObjRenderFrame(tkRenderFrame):
+    def __init__(self, mesh, master, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+        self.mesh = mesh
+
+    def initgl(self):
+        self.renderer.clear()
+        self.renderer.render_perspective(self.cam)
+        self.renderer.render_global_axis()
+        self.renderer.render_triangle_mesh(self.mesh)
+
+    def redraw(self):
+        self.renderer.clear()
+        self.renderer.render_perspective(self.cam)
+        self.renderer.render_global_axis()
+        self.renderer.render_triangle_mesh(self.mesh)
+
+    def set_mesh(self, mesh):
+        self.mesh = mesh
+
+
+class tkAnimUtilFrame(tkinter.Frame):
     def __init__(self, animation, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.grid()
@@ -94,7 +120,7 @@ class tkUtilFrame(tkinter.Frame):
 
         self.columnconfigure(0, weight=3)
         self.columnconfigure(1, weight=1)
-        self.columnconfigure(1, weight=1)
+        self.columnconfigure(2, weight=1)
         self.columnconfigure(3, weight=3)
 
         self.option_label.grid(row=0, column=0, columnspan=2, sticky=tkinter.E, pady=10)
@@ -110,3 +136,31 @@ class tkUtilFrame(tkinter.Frame):
         self.aniframe_scroll.grid(
             row=2, column=0, columnspan=4, padx=50, pady=5, sticky=tkinter.EW
         )
+
+
+class tkObjUtilFrame(tkinter.Frame):
+    def __init__(self, dirpath, filenames, master, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+        self.dirpath = dirpath
+        self.filenames = filenames
+        self.label = tkinter.Label(self, text=filenames[0])
+        self.file_controller = tkObjFileController(self.label, self.filenames)
+        self.prev_button = tkinter.Button(
+            self,
+            text="prev",
+            bitmap="@assets/ico_tostart.xbm",
+            command=self.file_controller.prev,
+        )
+        self.next_button = tkinter.Button(
+            self,
+            text="next",
+            bitmap="@assets/ico_toend.xbm",
+            command=self.file_controller.next,
+        )
+
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=6)
+        self.columnconfigure(2, weight=1)
+        self.prev_button.grid(row=0, column=0, sticky=tkinter.W, padx=25, pady=5)
+        self.label.grid(row=0, column=1, sticky=tkinter.EW, padx=25, pady=5)
+        self.next_button.grid(row=0, column=2, sticky=tkinter.E, padx=25, pady=5)
