@@ -1,3 +1,4 @@
+import pdb
 from unittest import result
 import numpy as np
 from copy import copy
@@ -7,6 +8,35 @@ from data_structure.math import *
 class Translation:
     def __init__(self, v: Vector3 = Vector3()):
         self.vec = copy(v)
+
+    def __eq__(self, other):
+        if not isinstance(other, Translation):
+            raise TypeError
+        return self.vec == other.vec
+
+    def __ne__(self, other):
+        if self.__eq__(other):
+            return False
+        return True
+
+    def __add__(self, other):
+        if isinstance(other, Vector3):
+            return Translation.from_vector(self.vec + other)
+        if isinstance(other, Translation):
+            return Translation.from_vector(self.vec + other.vec)
+        raise TypeError
+
+    def __sub__(self, other):
+        if isinstance(other, Vector3):
+            return Translation.from_vector(self.vec - other)
+        if isinstance(other, Translation):
+            return Translation.from_vector(self.vec - other.vec)
+        raise TypeError
+
+    def __mul__(self, other):
+        if not isinstance(other, float):
+            raise TypeError
+        return Translation.from_vector(self.vec * other)
 
     @classmethod
     def from_vector(cls, v: Vector3):
@@ -28,12 +58,42 @@ class Translation:
 
 class Rotation:
     def __init__(self, q: Quaternion = Quaternion()):
+        if not np.isclose(q @ q, 1):
+            raise ValueError
         self.quaternion = copy(q)
 
     def __eq__(self, other):
+        if not isinstance(other, Rotation):
+            raise TypeError
+        return (
+            self.quaternion == other.quaternion or self.quaternion == -other.quaternion
+        )
+
+    def __ne__(self, other):
+        if self.__eq__(other):
+            return False
+        return True
+
+    def __add__(self, other):
+        if isinstance(other, Quaternion):
+            return Rotation.from_quaternion(self.quaternion * other)
         if isinstance(other, Rotation):
-            return self.quaternion == other.quaternion
-        return False
+            return Rotation.from_quaternion(self.quaternion * other.quaternion)
+        raise TypeError
+
+    def __sub__(self, other):
+        if isinstance(other, Quaternion):
+            return Rotation.from_quaternion(other.inv() * self.quaternion)
+        if isinstance(other, Rotation):
+            return Rotation.from_quaternion(other.quaternion.inv() * self.quaternion)
+        raise TypeError
+
+    def __mul__(self, other):
+        if not isinstance(other, float):
+            raise TypeError
+        if np.isclose(other, 0):
+            return Rotation(Quaternion(1, 0, 0, 0))
+        return Rotation.from_vec(self.to_vec() * other)
 
     @classmethod
     def from_quaternion(cls, q: Quaternion):
@@ -77,7 +137,7 @@ class Rotation:
 
     @classmethod
     def from_euler(cls, seq: str = "xyz", *angles):
-        if len(seq) != 3 or len(angles[0]) != 3:
+        if len(seq) != 3 or len(angles) != 3:
             raise ValueError
         if seq[0] == seq[1] or seq[1] == seq[2]:
             raise ValueError
@@ -100,11 +160,38 @@ class Rotation:
 
         q = []
         for i in range(3):
-            q.append(rotate(seq[i], angles[0][i]))
+            q.append(rotate(seq[i], angles[i]))
         return cls(q[2] * q[1] * q[0])
+
+    @classmethod
+    def from_vec(cls, vec: Vector3):
+        angle = vec.magnitude()
+        if np.isclose(angle, 0):
+            return cls()
+        w = np.cos(angle / 2)
+        v = (vec / vec.magnitude()) * np.sin(angle / 2)
+        return cls(Quaternion(w, v.x, v.y, v.z))
 
     def to_quaternion(self):
         return copy(self.quaternion)
+
+    def to_vec(self):
+        theta = np.arccos(self.quaternion.w)
+        if np.isclose(theta, 0):
+            return Vector3(0, 0, 0)
+        if np.isclose(theta, np.pi):
+            x = self.quaternion.x
+            y = self.quaternion.y
+            z = self.quaternion.z
+        else:
+            x = self.quaternion.x / np.sin(theta)
+            y = self.quaternion.y / np.sin(theta)
+            z = self.quaternion.z / np.sin(theta)
+        vec = Vector3(x, y, z)
+        if np.isclose(vec.magnitude(), 0):
+            return Vector3(0, 0, 0)
+        vec = (vec / vec.magnitude()) * 2 * theta
+        return vec
 
     def to_matrix(self):
         q = self.quaternion
@@ -157,3 +244,8 @@ class Transform:
         # result_matrix[1, 3] = trans_mat[1, 3]
         # result_matrix[2, 3] = trans_mat[2, 3]
         return result_matrix
+
+    def from_matrix(cls, matrix):
+        t = Translation.from_matrix(matrix)
+        r = Rotation.from_matrix(matrix)
+        return cls(t, r)

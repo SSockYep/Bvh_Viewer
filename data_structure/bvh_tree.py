@@ -84,10 +84,18 @@ class Node:
 
 
 class BvhTree:
-    def __init__(self, root: Node, node_list: list):
+    def __init__(self, root: Node, node_list: list = None):
         if not root.is_root():
             raise ValueError
         self.root = root
+        if not node_list:
+            node_list = []
+            stack = [root]
+            while len(stack) > 0:
+                n = stack.pop()
+                node_list.append(n)
+                for c in n.children:
+                    stack.append(c)
         self._node_list = node_list
         self._name_dict = {}
         self._node_dict = {}
@@ -109,3 +117,4 @@ class BvhTree:
 
     def num_nodes(self):
         return len(self._node_list)
+

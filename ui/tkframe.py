@@ -1,9 +1,7 @@
-from re import S
 import tkinter
-from turtle import color
-from click import option
+import numpy as np
 from pyopengltk import OpenGLFrame
-from pytest import skip
+from data_structure.math import Vector3
 
 from ui.tkutil import tkObjFileController, tkScrollController
 
@@ -20,14 +18,29 @@ class tkRenderFrame(OpenGLFrame):
         self.bind("<ButtonRelease>", callback.release_callback)
 
 
+class tkRLFrame(tkRenderFrame):
+    def __init__(self, renderer, cam, callback, master, *args, **kwargs):
+        super().__init__(renderer, cam, callback, master, *args, **kwargs)
+
+
+class tkAnimationFrame(tkRenderFrame):
+    def __init__(
+        self, renderer, cam, callback, animation, master, pose=None, *args, **kwargs
+    ):
+        super().__init__(renderer, cam, callback, master, *args, **kwargs)
+        self.animation = animation
+
+
 class tkAnimRenderFrame(tkRenderFrame):
     def __init__(self, animation, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.skeleton = animation.skeleton
         self.animation = animation
         self.animate = 1
+
         self.frame_now = 0
         self.selected_joint = "None"
+        self.pose = pose
 
     def initgl(self):
         self.renderer.clear()
@@ -38,16 +51,22 @@ class tkAnimRenderFrame(tkRenderFrame):
         self.renderer.clear()
         self.renderer.render_perspective(self.cam)
         self.renderer.render_global_axis()
+
         self.renderer.render_pose(self.skeleton, pose)
+        if self.pose:
+            self.renderer.render_pose(
+                self.skeleton, self.pose, color=np.array([255, 0, 255], dtype=np.ubyte)
+            )
         if self.selected_joint != "None":
-            self.renderer.render_joint_pos(self.selected_joint, self.skeleton, pose)
+            joint_pos = self.animation.get_joint_pos_on_frame(
+                self.selected_joint, self.frame_now
+            )
+            self.renderer.render_point(joint_pos)
             if self.frame_now > 0:
-                self.renderer.render_joint_velocity(
-                    self.selected_joint,
-                    self.skeleton,
-                    self.animation,
-                    self.frame_now,
+                pos, vel = self.animation.get_joint_velocity(
+                    self.selected_joint, self.frame_now
                 )
+                self.renderer.render_line(pos, vel, np.array([255, 255, 0], np.ubyte))
         # self.renderer.render_pose() ## Get Pose idx
 
 
@@ -76,20 +95,25 @@ class tkAnimUtilFrame(tkinter.Frame):
     def __init__(self, animation, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.grid()
-
-        self.aniframe_scroll = tkinter.Scale(
-            self, to=animation.frame - 1, orient=tkinter.HORIZONTAL
-        )
-
-        self.scroll_controller = tkScrollController(
-            self.aniframe_scroll, int(animation.frame_time * 1000)
-        )
         option_list = ["None"]
-        for i in range(animation.skeleton.num_nodes()):
-            node = animation.skeleton.get_node_by_index(i)
-            option_list.append(node.get_name())
         self.selected_joint = tkinter.StringVar()
         self.selected_joint.set(option_list[0])
+
+        if animation:
+            self.aniframe_scroll = tkinter.Scale(
+                self, to=animation.frame - 1, orient=tkinter.HORIZONTAL
+            )
+            self.scroll_controller = tkScrollController(
+                self.aniframe_scroll, int(animation.frame_time * 1000)
+            )
+            for i in range(animation.skeleton.num_nodes()):
+                node = animation.skeleton.get_node_by_index(i)
+                option_list.append(node.get_name())
+
+        else:
+            self.aniframe_scroll = tkinter.Scale(self, to=0, orient=tkinter.HORIZONTAL)
+            self.scroll_controller = tkScrollController(self.aniframe_scroll, 0)
+
         self.joint_option = tkinter.OptionMenu(self, self.selected_joint, *option_list)
         self.joint_option.configure(width=35)
         self.play_button = tkinter.Button(

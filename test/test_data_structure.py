@@ -49,7 +49,7 @@ class TestVector3:
 
     def test_magnitude(self):
         test_vec = Vector3(3, 4, 5)
-        assert test_vec.magnitude() == np.sqrt(3 ** 2 + 4 ** 2 + 5 ** 2)
+        assert test_vec.magnitude() == np.sqrt(3**2 + 4**2 + 5**2)
 
     def test_add(self):
         test_vec1 = Vector3(1, 2, 3)
@@ -79,6 +79,9 @@ class TestVector3:
         scal = 5
         assert vec * scal == Vector3(5, 10, 15)
 
+    def test_neg(self):
+        assert -Vector3(1, 2, 3) == Vector3(-1, -2, -3)
+
 
 class TestQuaternion:
     def test_quaternion_init(self):
@@ -107,6 +110,12 @@ class TestQuaternion:
     def test_to_numpy_with_dtype(self):
         vec = Vector3(1, 2, 3)
         assert vec.to_numpy(np.uint32).dtype == np.uint32
+
+    def test_neg(self):
+        assert -Quaternion(1, 0, 0, 0) == Quaternion(-1, 0, 0, 0)
+
+    def test_float_mul(self):
+        assert Quaternion(1, 1, 1, 1) * 5 == Quaternion(5, 5, 5, 5)
 
 
 class TestMatrix4x4:
@@ -187,15 +196,63 @@ class TestMatrix4x4:
         vec = Vector3(1, 0, 0)
         assert mat @ vec == Vector3(0, 0, -1)
 
+    def test_transpose(self):
+        mat = Matrix4x4(
+            np.array([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
+        )
+        assert mat.transpose() == Matrix4x4(
+            np.array([[1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [4, 8, 12, 16]])
+        )
+
 
 class TestPose:
     def test_init(self):
-        root = Node()
+        rotations = [(Rotation.from_quaternion(Quaternion())) for _ in range(3)]
+        assert Pose(rotations, Translation(Vector3(1, 1, 1)))
+
+    def test_equal(self):
         node1 = Node()
         node2 = Node()
-        node1.set_parent(root)
-        node2.set_parent(root)
-        assert Pose(root)
+        rotations = [Rotation(Quaternion()) for _ in range(2)]
+        translation = Translation(Vector3())
+        assert Pose(rotations, translation) == Pose(rotations, translation)
+
+    def test_add(self):
+        pose1 = Pose([Rotation() for _ in range(2)], Translation(Vector3()))
+        pose2 = Pose(
+            [Rotation.from_euler("xyz", np.pi, 0, 0) for _ in range(2)],
+            Translation(Vector3()),
+        )
+        added = pose1 + pose2
+        assert added.rotations[0] == Rotation() + Rotation.from_euler(
+            "xyz", np.pi, 0, 0
+        )
+
+    def test_sub(self):
+        pose1 = Pose([Rotation()], Translation(Vector3()))
+        pose2 = Pose(
+            [Rotation.from_euler("xyz", np.pi, 0, 0)],
+            Translation(Vector3()),
+        )
+        added = pose1 - pose2
+        assert added.rotations[0] == Rotation() - Rotation.from_euler(
+            "xyz", np.pi, 0, 0
+        )
+
+    def test_mult(self):
+        pose = Pose(
+            [Rotation.from_euler("xyz", np.pi, 0, 0)],
+            Translation(Vector3()),
+        )
+        res = Pose(
+            [Rotation.from_euler("xyz", np.pi / 2, 0, 0)],
+            Translation(Vector3()),
+        )
+        print(pose.rotations[0].quaternion)
+        pose2 = pose * 0.5
+        print(pose2.rotations[0].quaternion)
+        print(res.rotations[0].quaternion)
+        assert pose * 0.5 == res
 
 
 class TestNode:

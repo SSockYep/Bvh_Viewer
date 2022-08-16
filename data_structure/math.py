@@ -1,3 +1,5 @@
+from decimal import DivisionByZero
+import pdb
 import numpy as np
 
 
@@ -23,6 +25,9 @@ class Vector3:
     def __nq__(self, other):
         return not self.__eq__(other)
 
+    def __neg__(self):
+        return Vector3(-self.x, -self.y, -self.z)
+
     def __add__(self, other):  # self + other: Vector addition
         return Vector3(self.x + other.x, self.y + other.y, self.z + other.z)
 
@@ -46,6 +51,8 @@ class Vector3:
         return Vector3(self.x * other, self.y * other, self.z * other)
 
     def __truediv__(self, other):  # self / scalar
+        if np.isclose(other, 0):
+            raise ZeroDivisionError
         return Vector3(self.x / other, self.y / other, self.z / other)
 
     @classmethod
@@ -110,6 +117,28 @@ class Quaternion:
             self.w * other, self.x * other, self.y * other, self.z * other
         )
 
+    def __truediv__(self, other):
+        return Quaternion(
+            self.w / other, self.x / other, self.y / other, self.z / other
+        )
+
+    def __matmul__(self, other):
+        if isinstance(other, Quaternion):
+            return (
+                self.w * other.w
+                + self.x * other.x
+                + self.y * other.y
+                + self.z * other.z
+            )
+        raise TypeError
+
+    def __neg__(self):
+        return Quaternion(-self.w, -self.x, -self.y, -self.z)
+
+    def inv(self):
+        con = self.conjugate()
+        return con / (con @ con)
+
     def conjugate(self):
         return Quaternion(self.w, -self.x, -self.y, -self.z)
 
@@ -160,3 +189,6 @@ class Matrix4x4:
 
     def to_numpy(self):
         return np.copy(self._mat)
+
+    def transpose(self):
+        return Matrix4x4(self._mat.T)

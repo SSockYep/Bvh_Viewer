@@ -1,6 +1,5 @@
 import pytest
 import numpy as np
-from sympy import Matrix
 from utility.bvh_loader import BvhLoader
 from utility.transform import Rotation, Transform, Translation
 from data_structure.bvh_tree import Node
@@ -23,6 +22,9 @@ class TestTranslation:
         mat = np.eye(4)
         mat[:, 3] = [1, 2, 3, 1]
         assert Translation(Vector3(1, 2, 3)).to_matrix() == Matrix4x4(mat)
+
+    def test_eq(self):
+        assert Translation(Vector3(1, 2, 3)) == Translation(Vector3(1, 2, 3))
 
 
 class TestRotation:
@@ -69,6 +71,17 @@ class TestRotation:
         rotation = Rotation.from_euler("xyz", 0, np.pi, 0)
         assert rotation.rotate(point) == Vector3(0, 0, -1)
 
+    def test_eq(self):
+        assert Rotation(Quaternion(1, 0, 0, 0)) == Rotation(Quaternion(-1, 0, 0, 0))
+
+    def test_to_vec(self):
+        assert Rotation(Quaternion(1, 0, 0, 0)).to_vec() == Vector3(0, 0, 0)
+
+    def test_mult_scalar(self):
+        assert Rotation.from_euler("xyz", np.pi / 3, 0, 0) * 0.5 == Rotation.from_euler(
+            "xyz", np.pi / 6, 0, 0
+        )
+
 
 class TestTransform:
     def test_init(self):
@@ -78,12 +91,12 @@ class TestTransform:
         t = Translation.from_vector(Vector3(1, 1, 1))
         r = Rotation.from_euler("xyz", np.pi / 2, 0, 0)
         np_mat = np.array(
-            [[1, 0, 0, 1], [0, 0, -1, 1], [0, 1, 0, 1], [0, 0, 0, 1]], dtype=np.float
+            [[1, 0, 0, 1], [0, 0, -1, 1], [0, 1, 0, 1], [0, 0, 0, 1]], dtype=np.float64
         )
         assert Transform(t, r).to_matrix() == Matrix4x4(np_mat)
 
 
 class TestLoader:
     def test_init(self):
-        parser = BvhLoader(filename="test.bvh")
-        assert parser.filename == "test.bvh"
+        loader = BvhLoader(filename="test.bvh")
+        assert loader.filename == "test.bvh"

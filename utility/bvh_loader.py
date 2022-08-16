@@ -1,14 +1,19 @@
-from multiprocessing.sharedctypes import Value
 from data_structure.animation import Animation
 from data_structure.math import *
 from data_structure.bvh_tree import Node, BvhTree
+from .transform import Rotation, Translation, Transform
+import copy
+import pdb
+
+from time import time as ptime
 
 
 class BvhLoader:
     def __init__(self, filename):
         self.filename = filename
 
-    def parse(self):
+    def load(self):
+        start_time = ptime()
         filename = self.filename
         with open(filename, "r") as f:
             lines = f.readlines()
@@ -62,6 +67,7 @@ class BvhLoader:
                     frame_time = float(line[2])
                 else:
                     motion.append(list(map(float, line)))
+            print("Bvh_loader.load", ptime() - start_time)
             tree = BvhTree(root, node_list)
-            animation = Animation(tree, frames, frame_time, motion)
+            animation = Animation.from_bvh_data(tree, frames, frame_time, motion)
             return animation
