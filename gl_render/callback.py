@@ -22,6 +22,7 @@ class Callback:
 
     def cursor_move_callback(self, event):
         if self.mouse_button == Mouse.MBUTTON:
+            print("move")
             self.cam.move(
                 (self.mouse_x - event.x) / 100, (event.y - self.mouse_y) / 100
             )

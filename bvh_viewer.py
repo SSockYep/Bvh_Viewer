@@ -8,7 +8,7 @@ from data_structure.math import *
 from gl_render.renderer import *
 from gl_render.camera import Camera
 from gl_render.callback import Callback
-from ui.tkutil import tkInterBvhFrameController
+from ui.tkutil import tkInterBvhFrameController, tkInterFrameController
 from utility.bvh_loader import BvhLoader
 from ui.tkframe import tkAnimRenderFrame, tkAnimUtilFrame
 
@@ -16,18 +16,18 @@ import pdb
 
 
 def main():
-    renderer = Renderer()
+    renderer = Renderer(scale=0.005)
     cam = Camera()
     root = tkinter.Tk()
     callback = Callback(cam, root)
     loader = BvhLoader("jump.bvh")
 
-    animation = loader.parse()
+    animation = loader.load()
     root.grid()
     root.columnconfigure(0, weight=1)
     root.columnconfigure(1, weight=1)
     glrender_frame = tkAnimRenderFrame(
-        animation, root, renderer, cam, callback, width=800, height=600
+        root, animation, renderer, cam, callback, width=800, height=600
     )
     glrender_frame.grid(row=0, pady=5)
 

@@ -44,14 +44,13 @@ class Renderer:
         glMatrixMode(GL_MODELVIEW)
         glColor3ub(255, 255, 255)
         glEnableClientState(GL_VERTEX_ARRAY)
-        pdb.set_trace()
         glVertexPointer(3, GL_FLOAT, 3 * mesh.vertices.itemsize, mesh.vertices)
         glDrawElements(
             GL_TRIANGLES, mesh.triangles.size, GL_UNSIGNED_INT, mesh.triangles
         )
         # glEnd()
 
-    def render_line(self, start, end):
+    def render_line(self, start, end, color):
         glBegin(GL_LINES)
         glColor3ubv(color)
         glVertex3fv(start.to_numpy())

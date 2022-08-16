@@ -68,7 +68,6 @@ class tkInterObjFrameController(tkInterFrameController):
     def update_status(self):
         file_controller = self.utilframe.file_controller
         if file_controller.changed:
-            print("sadfsadf")
             self.renderframe.set_mesh(
                 Mesh.from_obj(
                     os.path.join(

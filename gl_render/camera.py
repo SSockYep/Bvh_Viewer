@@ -11,6 +11,7 @@ class Camera:
         self.angle = 45
 
     def move(self, x_move, y_move):
+        print("sadfasddsfadff")
         cam_x, cam_y, cam_z = self._get_local_axis()
 
         self.pos = self.pos + cam_x * x_move + cam_y * y_move

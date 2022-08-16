@@ -4,6 +4,7 @@ from pyopengltk import OpenGLFrame
 from data_structure.math import Vector3
 
 from ui.tkutil import tkObjFileController, tkScrollController
+from utility.transform import Transform
 
 
 class tkRenderFrame(OpenGLFrame):
@@ -23,19 +24,12 @@ class tkRLFrame(tkRenderFrame):
         super().__init__(renderer, cam, callback, master, *args, **kwargs)
 
 
-class tkAnimationFrame(tkRenderFrame):
-    def __init__(
-        self, renderer, cam, callback, animation, master, pose=None, *args, **kwargs
-    ):
-        super().__init__(renderer, cam, callback, master, *args, **kwargs)
-        self.animation = animation
-
-
 class tkAnimRenderFrame(tkRenderFrame):
-    def __init__(self, animation, master, *args, **kwargs):
+    def __init__(self, master, animation, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
         self.skeleton = animation.skeleton
         self.animation = animation
+        self.pose = None
         self.animate = 1
 
         self.frame_now = 0
@@ -46,6 +40,7 @@ class tkAnimRenderFrame(tkRenderFrame):
         self.renderer.render_perspective(self.cam)
 
     def redraw(self):
+        print("redraw")
         pose = self.animation.get_pose(self.frame_now)
         self.renderer.clear()
         self.renderer.render_perspective(self.cam)
@@ -81,6 +76,7 @@ class tkObjRenderFrame(tkRenderFrame):
         self.renderer.render_triangle_mesh(self.mesh)
 
     def redraw(self):
+        print("asdfsdafsdaf")
         self.renderer.clear()
         self.renderer.render_perspective(self.cam)
         self.renderer.render_global_axis()

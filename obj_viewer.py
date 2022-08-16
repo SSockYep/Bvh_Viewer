@@ -25,7 +25,7 @@ import pdb
 
 
 def main():
-    renderer = Renderer()
+    renderer = Renderer(scale=1)
     cam = Camera()
     root = tkinter.Tk()
     callback = Callback(cam, root)
